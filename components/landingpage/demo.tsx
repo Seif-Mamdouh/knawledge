@@ -35,13 +35,13 @@ export default function Demo() {
           transition={{ duration: 0.5 }}
         >
           <h2 className="text-3xl sm:text-4xl font-bold text-blue-900">Try It Yourself</h2>
-          <p className="mt-4 text-lg text-gray-600">
+          <p className="mt-4 text-lg text-blue-700">
             Experience the power of our AI knowledge analyzer with a free demo.
           </p>
         </motion.div>
 
         <motion.div
-          className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden"
+          className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden border border-blue-50"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -89,9 +89,9 @@ export default function Demo() {
                     animate={{ opacity: 1, height: "auto" }}
                     transition={{ duration: 0.5 }}
                   >
-                    <div className="border-t border-gray-200 pt-6">
+                    <div className="border-t border-blue-100 pt-6">
                       <h3 className="text-xl font-semibold text-blue-900 mb-4">Summary</h3>
-                      <p className="text-gray-700">
+                      <p className="text-blue-700">
                         This content discusses the impact of artificial intelligence on modern business operations. It
                         highlights how AI technologies are transforming various industries through automation, data
                         analysis, and predictive capabilities. The author emphasizes the importance of ethical
@@ -99,9 +99,9 @@ export default function Demo() {
                       </p>
                     </div>
 
-                    <div className="border-t border-gray-200 pt-6">
+                    <div className="border-t border-blue-100 pt-6">
                       <h3 className="text-xl font-semibold text-blue-900 mb-4">Key Points</h3>
-                      <ul className="space-y-2 text-gray-700">
+                      <ul className="space-y-2 text-blue-700">
                         <li className="flex items-start">
                           <div className="h-5 w-5 rounded-full bg-blue-100 flex-shrink-0 flex items-center justify-center text-blue-600 mr-3 mt-0.5">
                             <span className="text-xs font-bold">1</span>
@@ -131,17 +131,17 @@ export default function Demo() {
                       </ul>
                     </div>
 
-                    <div className="border-t border-gray-200 pt-6">
+                    <div className="border-t border-blue-100 pt-6">
                       <h3 className="text-xl font-semibold text-blue-900 mb-4">Sentiment Analysis</h3>
-                      <div className="bg-gray-100 rounded-lg p-4">
+                      <div className="bg-blue-50 rounded-lg p-4">
                         <div className="flex justify-between mb-2">
-                          <span className="text-gray-700">Overall Sentiment:</span>
-                          <span className="font-medium text-green-600">Positive</span>
+                          <span className="text-blue-700">Overall Sentiment:</span>
+                          <span className="font-medium text-blue-600">Positive</span>
                         </div>
-                        <div className="w-full bg-gray-300 rounded-full h-2.5">
-                          <div className="bg-green-500 h-2.5 rounded-full" style={{ width: "75%" }}></div>
+                        <div className="w-full bg-blue-200 rounded-full h-2.5">
+                          <div className="bg-blue-500 h-2.5 rounded-full" style={{ width: "75%" }}></div>
                         </div>
-                        <div className="flex justify-between text-xs text-gray-500 mt-1">
+                        <div className="flex justify-between text-xs text-blue-500 mt-1">
                           <span>Negative</span>
                           <span>Neutral</span>
                           <span>Positive</span>
@@ -154,15 +154,15 @@ export default function Demo() {
 
               <TabsContent value="text">
                 <div className="text-center py-8">
-                  <p className="text-gray-500">Paste your content text here to analyze.</p>
-                  <p className="text-sm text-gray-400 mt-2">(Feature available in full version)</p>
+                  <p className="text-blue-700">Paste your content text here to analyze.</p>
+                  <p className="text-sm text-blue-500 mt-2">(Feature available in full version)</p>
                 </div>
               </TabsContent>
 
               <TabsContent value="upload">
                 <div className="text-center py-8">
-                  <p className="text-gray-500">Upload a document to analyze.</p>
-                  <p className="text-sm text-gray-400 mt-2">(Feature available in full version)</p>
+                  <p className="text-blue-700">Upload a document to analyze.</p>
+                  <p className="text-sm text-blue-500 mt-2">(Feature available in full version)</p>
                 </div>
               </TabsContent>
             </Tabs>

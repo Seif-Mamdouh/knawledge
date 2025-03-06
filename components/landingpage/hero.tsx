@@ -6,14 +6,14 @@ import { ArrowRight, FileText, Search, CheckCircle } from "lucide-react"
 
 export default function Hero() {
   return (
-    <section className="pt-32 pb-20 overflow-hidden">
+    <section className="pt-32 pb-20 overflow-hidden bg-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <motion.div initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }}>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-blue-900 leading-tight">
               AI-Powered <span className="text-blue-600">Knowledge Analysis</span> & Summarization
             </h1>
-            <p className="mt-6 text-lg text-gray-600 max-w-lg">
+            <p className="mt-6 text-lg text-blue-800 max-w-lg">
               Extract key insights, generate concise summaries, and analyze sentiment from any content with our advanced
               AI technology.
             </p>
@@ -26,13 +26,13 @@ export default function Hero() {
                 Watch Demo
               </Button>
             </div>
-            <div className="mt-8 flex items-center space-x-4 text-sm text-gray-500">
+            <div className="mt-8 flex items-center space-x-4 text-sm text-blue-700">
               <div className="flex items-center">
-                <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                <CheckCircle className="h-5 w-5 text-blue-500 mr-2" />
                 <span>No credit card required</span>
               </div>
               <div className="flex items-center">
-                <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                <CheckCircle className="h-5 w-5 text-blue-500 mr-2" />
                 <span>Instant results</span>
               </div>
             </div>
@@ -44,24 +44,24 @@ export default function Hero() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <div className="relative z-10 bg-white rounded-xl shadow-xl p-6 border border-gray-100">
+            <div className="relative z-10 bg-white rounded-xl shadow-xl p-6 border border-blue-50">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex space-x-2">
                   <div className="w-3 h-3 rounded-full bg-red-500"></div>
                   <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                   <div className="w-3 h-3 rounded-full bg-green-500"></div>
                 </div>
-                <div className="bg-gray-100 rounded-md px-3 py-1 text-xs text-gray-500">knowledge-analyzer.ai</div>
+                <div className="bg-blue-50 rounded-md px-3 py-1 text-xs text-blue-600">knowledge-analyzer.ai</div>
               </div>
               <div className="space-y-4">
-                <div className="bg-gray-50 p-4 rounded-lg">
+                <div className="bg-blue-50 p-4 rounded-lg">
                   <div className="flex items-center text-blue-800 font-medium mb-2">
                     <FileText className="h-5 w-5 mr-2 text-blue-600" />
                     Knowledge Analysis
                   </div>
-                  <div className="h-2 bg-gray-200 rounded-full w-full mb-3"></div>
-                  <div className="h-2 bg-gray-200 rounded-full w-5/6 mb-3"></div>
-                  <div className="h-2 bg-gray-200 rounded-full w-4/6"></div>
+                  <div className="h-2 bg-blue-100 rounded-full w-full mb-3"></div>
+                  <div className="h-2 bg-blue-100 rounded-full w-5/6 mb-3"></div>
+                  <div className="h-2 bg-blue-100 rounded-full w-4/6"></div>
                 </div>
                 <div className="bg-blue-50 p-4 rounded-lg">
                   <div className="flex items-center text-blue-800 font-medium mb-2">
@@ -83,14 +83,14 @@ export default function Hero() {
                     </li>
                   </ul>
                 </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
+                <div className="bg-blue-50 p-4 rounded-lg">
                   <div className="flex items-center text-blue-800 font-medium mb-2">
                     <CheckCircle className="h-5 w-5 mr-2 text-blue-600" />
                     Summary
                   </div>
-                  <div className="h-2 bg-gray-200 rounded-full w-full mb-3"></div>
-                  <div className="h-2 bg-gray-200 rounded-full w-5/6 mb-3"></div>
-                  <div className="h-2 bg-gray-200 rounded-full w-4/6"></div>
+                  <div className="h-2 bg-blue-100 rounded-full w-full mb-3"></div>
+                  <div className="h-2 bg-blue-100 rounded-full w-5/6 mb-3"></div>
+                  <div className="h-2 bg-blue-100 rounded-full w-4/6"></div>
                 </div>
               </div>
             </div>

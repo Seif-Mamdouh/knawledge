@@ -23,7 +23,7 @@ export default function HowItWorks() {
   ]
 
   return (
-    <section id="how-it-works" className="py-20">
+    <section id="how-it-works" className="py-20 bg-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           className="text-center max-w-3xl mx-auto mb-16"
@@ -33,7 +33,7 @@ export default function HowItWorks() {
           transition={{ duration: 0.5 }}
         >
           <h2 className="text-3xl sm:text-4xl font-bold text-blue-900">How It Works</h2>
-          <p className="mt-4 text-lg text-gray-600">
+          <p className="mt-4 text-lg text-blue-700">
             Our simple three-step process makes knowledge analysis quick and effortless.
           </p>
         </motion.div>
@@ -46,7 +46,7 @@ export default function HowItWorks() {
             {steps.map((step, index) => (
               <motion.div
                 key={index}
-                className="bg-white rounded-xl p-8 shadow-sm border border-gray-100 text-center"
+                className="bg-white rounded-xl p-8 shadow-sm border border-blue-50 text-center"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -63,7 +63,7 @@ export default function HowItWorks() {
                   {index + 1}
                 </div>
                 <h3 className="text-xl font-semibold text-blue-900 mb-2">{step.title}</h3>
-                <p className="text-gray-600">{step.description}</p>
+                <p className="text-blue-700">{step.description}</p>
               </motion.div>
             ))}
           </div>

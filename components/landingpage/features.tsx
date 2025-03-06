@@ -53,7 +53,7 @@ export default function Features() {
   }
 
   return (
-    <section id="features" className="py-20 bg-gray-50">
+    <section id="features" className="py-20 bg-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           className="text-center max-w-3xl mx-auto mb-16"
@@ -81,7 +81,7 @@ export default function Features() {
           {features.map((feature, index) => (
             <motion.div
               key={index}
-              className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow border border-gray-100"
+              className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow border border-blue-50"
               variants={item}
               whileHover={{ y: -5, transition: { duration: 0.2 } }}
             >
