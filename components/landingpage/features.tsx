@@ -8,27 +8,27 @@ export default function Features() {
     {
       icon: <FileText className="h-6 w-6" />,
       title: "Automatic Summarization",
-      description: "Generate concise summaries of lengthy articles in seconds, saving you valuable time.",
+      description: "Generate concise summaries of lengthy content in seconds, saving you valuable time.",
     },
     {
       icon: <Search className="h-6 w-6" />,
       title: "Key Points Extraction",
-      description: "Identify and extract the most important information from any article.",
+      description: "Identify and extract the most important information from any content.",
     },
     {
       icon: <Heart className="h-6 w-6" />,
       title: "Sentiment Analysis",
-      description: "Understand the emotional tone and bias of articles with advanced sentiment detection.",
+      description: "Understand the emotional tone and bias of content with advanced sentiment detection.",
     },
     {
       icon: <BarChart className="h-6 w-6" />,
       title: "Topic Identification",
-      description: "Automatically categorize articles by their main topics and themes.",
+      description: "Automatically categorize content by their main topics and themes.",
     },
     {
       icon: <CheckCircle className="h-6 w-6" />,
       title: "Readability Metrics",
-      description: "Assess the complexity and accessibility of article content with detailed metrics.",
+      description: "Assess the complexity and accessibility of content with detailed metrics.",
     },
     {
       icon: <Shield className="h-6 w-6" />,
@@ -62,12 +62,12 @@ export default function Features() {
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="text-3xl sm:text-4xl font-bold text-navy-900">
-            Powerful Features for Complete Article Analysis
+          <h2 className="text-3xl sm:text-4xl font-bold text-blue-900">
+            Powerful Features for Complete Knowledge Analysis
           </h2>
           <p className="mt-4 text-lg text-gray-600">
             Our AI-powered platform offers a comprehensive suite of tools to analyze, summarize, and extract insights
-            from any article.
+            from any content.
           </p>
         </motion.div>
 
@@ -85,10 +85,10 @@ export default function Features() {
               variants={item}
               whileHover={{ y: -5, transition: { duration: 0.2 } }}
             >
-              <div className="w-12 h-12 rounded-full bg-navy-100 flex items-center justify-center text-navy-600 mb-4">
+              <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mb-4">
                 {feature.icon}
               </div>
-              <h3 className="text-xl font-semibold text-navy-900 mb-2">{feature.title}</h3>
+              <h3 className="text-xl font-semibold text-blue-900 mb-2">{feature.title}</h3>
               <p className="text-gray-600">{feature.description}</p>
             </motion.div>
           ))}

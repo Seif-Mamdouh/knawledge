@@ -33,13 +33,13 @@ export default function Navbar() {
         <div className="flex justify-between items-center py-4">
           <Link href="/" className="flex items-center space-x-2">
             <motion.div
-              className="w-10 h-10 rounded-full bg-navy-600 flex items-center justify-center"
+              className="w-10 h-10 rounded-full bg-blue-700 flex items-center justify-center"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
-              <span className="text-white font-bold text-xl">A</span>
+              <span className="text-white font-bold text-xl">K</span>
             </motion.div>
-            <span className="text-navy-900 font-bold text-xl">ArticleAI</span>
+            <span className="text-blue-900 font-bold text-xl">KnowledgeAI</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -48,12 +48,12 @@ export default function Navbar() {
             <NavLink href="#how-it-works">How It Works</NavLink>
             <NavLink href="#demo">Demo</NavLink>
             <NavLink href="#testimonials">Testimonials</NavLink>
-            <Button className="bg-navy-600 hover:bg-navy-700 text-white">Get Started</Button>
+            <Button className="bg-blue-700 hover:bg-blue-800 text-white">Get Started</Button>
           </nav>
 
           {/* Mobile Navigation Toggle */}
           <div className="md:hidden">
-            <button onClick={() => setIsOpen(!isOpen)} className="text-navy-900">
+            <button onClick={() => setIsOpen(!isOpen)} className="text-blue-900">
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
@@ -82,7 +82,7 @@ export default function Navbar() {
             <MobileNavLink href="#testimonials" onClick={() => setIsOpen(false)}>
               Testimonials
             </MobileNavLink>
-            <Button className="bg-navy-600 hover:bg-navy-700 text-white w-full">Get Started</Button>
+            <Button className="bg-blue-700 hover:bg-blue-800 text-white w-full">Get Started</Button>
           </div>
         </motion.div>
       )}
@@ -92,7 +92,7 @@ export default function Navbar() {
 
 function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <Link href={href} className="text-navy-800 hover:text-navy-600 font-medium transition-colors">
+    <Link href={href} className="text-blue-800 hover:text-blue-600 font-medium transition-colors">
       {children}
     </Link>
   )
@@ -111,7 +111,7 @@ function MobileNavLink({
     <Link
       href={href}
       onClick={onClick}
-      className="text-navy-800 hover:text-navy-600 font-medium py-2 block transition-colors"
+      className="text-blue-800 hover:text-blue-600 font-medium py-2 block transition-colors"
     >
       {children}
     </Link>

@@ -25,7 +25,7 @@ export default function Demo() {
   }
 
   return (
-    <section id="demo" className="py-20 bg-navy-50">
+    <section id="demo" className="py-20 bg-blue-50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           className="text-center max-w-3xl mx-auto mb-12"
@@ -34,9 +34,9 @@ export default function Demo() {
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="text-3xl sm:text-4xl font-bold text-navy-900">Try It Yourself</h2>
+          <h2 className="text-3xl sm:text-4xl font-bold text-blue-900">Try It Yourself</h2>
           <p className="mt-4 text-lg text-gray-600">
-            Experience the power of our AI article analyzer with a free demo.
+            Experience the power of our AI knowledge analyzer with a free demo.
           </p>
         </motion.div>
 
@@ -68,7 +68,7 @@ export default function Demo() {
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Input
                     type="url"
-                    placeholder="Enter article URL (e.g., https://example.com/article)"
+                    placeholder="Enter content URL (e.g., https://example.com/article)"
                     value={url}
                     onChange={(e) => setUrl(e.target.value)}
                     className="flex-1"
@@ -76,7 +76,7 @@ export default function Demo() {
                   <Button
                     onClick={handleAnalyze}
                     disabled={!url || isAnalyzing}
-                    className="bg-navy-600 hover:bg-navy-700 text-white"
+                    className="bg-blue-700 hover:bg-blue-800 text-white"
                   >
                     {isAnalyzing ? "Analyzing..." : "Analyze"}
                   </Button>
@@ -90,9 +90,9 @@ export default function Demo() {
                     transition={{ duration: 0.5 }}
                   >
                     <div className="border-t border-gray-200 pt-6">
-                      <h3 className="text-xl font-semibold text-navy-900 mb-4">Summary</h3>
+                      <h3 className="text-xl font-semibold text-blue-900 mb-4">Summary</h3>
                       <p className="text-gray-700">
-                        This article discusses the impact of artificial intelligence on modern business operations. It
+                        This content discusses the impact of artificial intelligence on modern business operations. It
                         highlights how AI technologies are transforming various industries through automation, data
                         analysis, and predictive capabilities. The author emphasizes the importance of ethical
                         considerations and human oversight in AI implementation.
@@ -100,10 +100,10 @@ export default function Demo() {
                     </div>
 
                     <div className="border-t border-gray-200 pt-6">
-                      <h3 className="text-xl font-semibold text-navy-900 mb-4">Key Points</h3>
+                      <h3 className="text-xl font-semibold text-blue-900 mb-4">Key Points</h3>
                       <ul className="space-y-2 text-gray-700">
                         <li className="flex items-start">
-                          <div className="h-5 w-5 rounded-full bg-navy-100 flex-shrink-0 flex items-center justify-center text-navy-600 mr-3 mt-0.5">
+                          <div className="h-5 w-5 rounded-full bg-blue-100 flex-shrink-0 flex items-center justify-center text-blue-600 mr-3 mt-0.5">
                             <span className="text-xs font-bold">1</span>
                           </div>
                           <span>
@@ -112,7 +112,7 @@ export default function Demo() {
                           </span>
                         </li>
                         <li className="flex items-start">
-                          <div className="h-5 w-5 rounded-full bg-navy-100 flex-shrink-0 flex items-center justify-center text-navy-600 mr-3 mt-0.5">
+                          <div className="h-5 w-5 rounded-full bg-blue-100 flex-shrink-0 flex items-center justify-center text-blue-600 mr-3 mt-0.5">
                             <span className="text-xs font-bold">2</span>
                           </div>
                           <span>
@@ -121,7 +121,7 @@ export default function Demo() {
                           </span>
                         </li>
                         <li className="flex items-start">
-                          <div className="h-5 w-5 rounded-full bg-navy-100 flex-shrink-0 flex items-center justify-center text-navy-600 mr-3 mt-0.5">
+                          <div className="h-5 w-5 rounded-full bg-blue-100 flex-shrink-0 flex items-center justify-center text-blue-600 mr-3 mt-0.5">
                             <span className="text-xs font-bold">3</span>
                           </div>
                           <span>
@@ -132,7 +132,7 @@ export default function Demo() {
                     </div>
 
                     <div className="border-t border-gray-200 pt-6">
-                      <h3 className="text-xl font-semibold text-navy-900 mb-4">Sentiment Analysis</h3>
+                      <h3 className="text-xl font-semibold text-blue-900 mb-4">Sentiment Analysis</h3>
                       <div className="bg-gray-100 rounded-lg p-4">
                         <div className="flex justify-between mb-2">
                           <span className="text-gray-700">Overall Sentiment:</span>
@@ -154,7 +154,7 @@ export default function Demo() {
 
               <TabsContent value="text">
                 <div className="text-center py-8">
-                  <p className="text-gray-500">Paste your article text here to analyze.</p>
+                  <p className="text-gray-500">Paste your content text here to analyze.</p>
                   <p className="text-sm text-gray-400 mt-2">(Feature available in full version)</p>
                 </div>
               </TabsContent>

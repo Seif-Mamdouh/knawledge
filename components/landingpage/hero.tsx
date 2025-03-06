@@ -10,19 +10,19 @@ export default function Hero() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <motion.div initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }}>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-navy-900 leading-tight">
-              AI-Powered <span className="text-navy-600">Article Analysis</span> & Summarization
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-blue-900 leading-tight">
+              AI-Powered <span className="text-blue-600">Knowledge Analysis</span> & Summarization
             </h1>
             <p className="mt-6 text-lg text-gray-600 max-w-lg">
-              Extract key insights, generate concise summaries, and analyze sentiment from any article with our advanced
+              Extract key insights, generate concise summaries, and analyze sentiment from any content with our advanced
               AI technology.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4">
-              <Button className="bg-navy-600 hover:bg-navy-700 text-white px-8 py-6 text-lg">
+              <Button className="bg-blue-700 hover:bg-blue-800 text-white px-8 py-6 text-lg">
                 Try for Free
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-              <Button variant="outline" className="border-navy-600 text-navy-600 hover:bg-navy-50 px-8 py-6 text-lg">
+              <Button variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50 px-8 py-6 text-lg">
                 Watch Demo
               </Button>
             </div>
@@ -51,41 +51,41 @@ export default function Hero() {
                   <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                   <div className="w-3 h-3 rounded-full bg-green-500"></div>
                 </div>
-                <div className="bg-gray-100 rounded-md px-3 py-1 text-xs text-gray-500">article-analyzer.ai</div>
+                <div className="bg-gray-100 rounded-md px-3 py-1 text-xs text-gray-500">knowledge-analyzer.ai</div>
               </div>
               <div className="space-y-4">
                 <div className="bg-gray-50 p-4 rounded-lg">
-                  <div className="flex items-center text-navy-800 font-medium mb-2">
-                    <FileText className="h-5 w-5 mr-2 text-navy-600" />
-                    Article Analysis
+                  <div className="flex items-center text-blue-800 font-medium mb-2">
+                    <FileText className="h-5 w-5 mr-2 text-blue-600" />
+                    Knowledge Analysis
                   </div>
                   <div className="h-2 bg-gray-200 rounded-full w-full mb-3"></div>
                   <div className="h-2 bg-gray-200 rounded-full w-5/6 mb-3"></div>
                   <div className="h-2 bg-gray-200 rounded-full w-4/6"></div>
                 </div>
-                <div className="bg-navy-50 p-4 rounded-lg">
-                  <div className="flex items-center text-navy-800 font-medium mb-2">
-                    <Search className="h-5 w-5 mr-2 text-navy-600" />
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <div className="flex items-center text-blue-800 font-medium mb-2">
+                    <Search className="h-5 w-5 mr-2 text-blue-600" />
                     Key Points
                   </div>
                   <ul className="space-y-2">
                     <li className="flex items-start">
-                      <div className="h-2 w-2 mt-2 rounded-full bg-navy-600 mr-2"></div>
-                      <div className="h-2 bg-navy-200 rounded-full w-full"></div>
+                      <div className="h-2 w-2 mt-2 rounded-full bg-blue-600 mr-2"></div>
+                      <div className="h-2 bg-blue-200 rounded-full w-full"></div>
                     </li>
                     <li className="flex items-start">
-                      <div className="h-2 w-2 mt-2 rounded-full bg-navy-600 mr-2"></div>
-                      <div className="h-2 bg-navy-200 rounded-full w-5/6"></div>
+                      <div className="h-2 w-2 mt-2 rounded-full bg-blue-600 mr-2"></div>
+                      <div className="h-2 bg-blue-200 rounded-full w-5/6"></div>
                     </li>
                     <li className="flex items-start">
-                      <div className="h-2 w-2 mt-2 rounded-full bg-navy-600 mr-2"></div>
-                      <div className="h-2 bg-navy-200 rounded-full w-4/6"></div>
+                      <div className="h-2 w-2 mt-2 rounded-full bg-blue-600 mr-2"></div>
+                      <div className="h-2 bg-blue-200 rounded-full w-4/6"></div>
                     </li>
                   </ul>
                 </div>
                 <div className="bg-gray-50 p-4 rounded-lg">
-                  <div className="flex items-center text-navy-800 font-medium mb-2">
-                    <CheckCircle className="h-5 w-5 mr-2 text-navy-600" />
+                  <div className="flex items-center text-blue-800 font-medium mb-2">
+                    <CheckCircle className="h-5 w-5 mr-2 text-blue-600" />
                     Summary
                   </div>
                   <div className="h-2 bg-gray-200 rounded-full w-full mb-3"></div>
@@ -96,8 +96,8 @@ export default function Hero() {
             </div>
 
             {/* Decorative elements */}
-            <div className="absolute -top-6 -right-6 w-32 h-32 bg-navy-600 rounded-full opacity-20 blur-2xl"></div>
-            <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-navy-400 rounded-full opacity-20 blur-3xl"></div>
+            <div className="absolute -top-6 -right-6 w-32 h-32 bg-blue-600 rounded-full opacity-20 blur-2xl"></div>
+            <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-blue-400 rounded-full opacity-20 blur-3xl"></div>
           </motion.div>
         </div>
       </div>

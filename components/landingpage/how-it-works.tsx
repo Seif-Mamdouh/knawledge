@@ -7,7 +7,7 @@ export default function HowItWorks() {
   const steps = [
     {
       icon: <FileText className="h-6 w-6" />,
-      title: "Upload Your Article",
+      title: "Upload Your Content",
       description: "Paste a URL, upload a document, or input text directly into our platform.",
     },
     {
@@ -32,15 +32,15 @@ export default function HowItWorks() {
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="text-3xl sm:text-4xl font-bold text-navy-900">How It Works</h2>
+          <h2 className="text-3xl sm:text-4xl font-bold text-blue-900">How It Works</h2>
           <p className="mt-4 text-lg text-gray-600">
-            Our simple three-step process makes article analysis quick and effortless.
+            Our simple three-step process makes knowledge analysis quick and effortless.
           </p>
         </motion.div>
 
         <div className="relative">
           {/* Connection line */}
-          <div className="absolute top-1/2 left-0 right-0 h-1 bg-navy-100 -translate-y-1/2 hidden md:block"></div>
+          <div className="absolute top-1/2 left-0 right-0 h-1 bg-blue-100 -translate-y-1/2 hidden md:block"></div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
             {steps.map((step, index) => (
@@ -53,16 +53,16 @@ export default function HowItWorks() {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
                 <motion.div
-                  className="w-16 h-16 rounded-full bg-navy-600 flex items-center justify-center text-white mx-auto mb-6"
+                  className="w-16 h-16 rounded-full bg-blue-700 flex items-center justify-center text-white mx-auto mb-6"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                 >
                   {step.icon}
                 </motion.div>
-                <div className="w-8 h-8 rounded-full bg-navy-200 flex items-center justify-center text-navy-800 font-bold mx-auto mb-4">
+                <div className="w-8 h-8 rounded-full bg-blue-200 flex items-center justify-center text-blue-800 font-bold mx-auto mb-4">
                   {index + 1}
                 </div>
-                <h3 className="text-xl font-semibold text-navy-900 mb-2">{step.title}</h3>
+                <h3 className="text-xl font-semibold text-blue-900 mb-2">{step.title}</h3>
                 <p className="text-gray-600">{step.description}</p>
               </motion.div>
             ))}
