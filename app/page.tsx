@@ -5,7 +5,7 @@ import Table from '@/components/table'
 import TablePlaceholder from '@/components/table-placeholder'
 import ExpandingArrow from '@/components/expanding-arrow'
 export const dynamic = 'force-dynamic'
-import LandingPage from '@/components/LandingPage'
+import LandingPage from '@/components/landingpage/LandingPage'
 
 export default function Home() {
   return (

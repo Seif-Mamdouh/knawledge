@@ -18,3 +18,5 @@ model users {
   image     String
   createdAt DateTime @default(now())
 }
+
+
