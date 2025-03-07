@@ -3,12 +3,11 @@
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
-async function extractTitleFromUrl(url: string): Promise<string> {
+async function extractTitleFromHtml(url: string): Promise<string> {
   try {
     const response = await fetch(url);
     const html = await response.text();
     
-    // Extract title using regex
     const titleMatch = html.match(/<title>(.*?)<\/title>/i);
     const title = titleMatch ? titleMatch[1] : url;
     
@@ -18,6 +17,11 @@ async function extractTitleFromUrl(url: string): Promise<string> {
     return url;
   }
 }
+
+async function extractTitleFromUrl(url: string): Promise<string> {
+  return await extractTitleFromHtml(url);
+}
+
 
 export async function addLinkToPage(url: string, pageId: string) {
   try {

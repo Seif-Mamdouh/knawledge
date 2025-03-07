@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { addLinkToPage } from "@/app/actions/links";
+import { addLinkToPage } from "@/app/actions/page";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface LinkInputProps {
