@@ -25,6 +25,19 @@ async function extractTitleFromUrl(url: string): Promise<string> {
 
 export async function addLinkToPage(url: string, pageId: string) {
   try {
+    // First, let's verify the user exists
+    const user = await prisma.users.findUnique({
+      where: {
+        id: 'b5a80bbe-c649-4dcd-bd86-53dd4cdc9232'
+      }
+    });
+
+    console.log("Found user:", user);
+
+    if (!user) {
+      return { success: false, error: "User not found in database" };
+    }
+
     if (!url || !url.trim()) {
       return { success: false, error: "URL cannot be empty" };
     }
@@ -34,26 +47,37 @@ export async function addLinkToPage(url: string, pageId: string) {
 
     // Create a new page if pageId is not provided
     if (!pageId) {
-      const newPage = await prisma.page.create({
-        data: {
-          title,
-          url: cleanUrl,
-          user: {
-            connect: {
-              id: 'b5a80bbe-c649-4dcd-bd86-53dd4cdc9232',
-            },
-          },
-        },
+      console.log("Creating new page with data:", {
+        title,
+        url: cleanUrl,
+        userId: user.id
       });
 
-      // Create a page snapshot for the new page
-      const snapshotResult = await createPageSnapshot(newPage.id, cleanUrl, title);
-      if (!snapshotResult.success) {
-        console.error("Failed to create snapshot:", snapshotResult.error);
-      }
+      try {
+        const newPage = await prisma.$transaction(async (prisma) => {
+          const page = await prisma.page.create({
+            data: {
+              title: title,
+              url: cleanUrl,
+              userId: user.id,
+            },
+            include: {
+              user: true // Include user data in the response
+            }
+          });
+          
+          console.log("Created page:", page);
+          return page;
+        });
 
-      revalidatePath(`/summarize`);
-      return { success: true, pageId: newPage.id };
+        // Create a page snapshot
+        await createPageSnapshot(newPage.id, cleanUrl, title);
+        revalidatePath(`/summarize`);
+        return { success: true, pageId: newPage.id };
+      } catch (createError) {
+        console.error("Detailed create error:", createError);
+        return { success: false, error: `Failed to create page: ${createError.message}` };
+      }
     }
 
     // Update existing page
@@ -68,16 +92,11 @@ export async function addLinkToPage(url: string, pageId: string) {
       },
     });
 
-    // Create a new snapshot for the updated page
-    const snapshotResult = await createPageSnapshot(pageId, cleanUrl, title);
-    if (!snapshotResult.success) {
-      console.error("Failed to create snapshot:", snapshotResult.error);
-    }
-
     revalidatePath(`/summarize`);
     return { success: true };
   } catch (error) {
-    console.error("Error adding link to page:", error);
+    console.error("Detailed error:", error);
     return { success: false, error: "Failed to add link" };
   }
-} 
+}
+

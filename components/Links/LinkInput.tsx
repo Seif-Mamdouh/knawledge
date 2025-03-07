@@ -19,19 +19,20 @@ export function LinkInput({ pageId, onAddLink }: LinkInputProps) {
     mutationFn: async (url: string) => {
       const result = await addLinkToPage(url, pageId);
       if (!result.success) {
-        throw new Error(result.error);
+        throw new Error(result.error || 'Failed to add link');
       }
       return result;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log("Successfully added link:", data);
       onAddLink(url);
       setUrl("");
       // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: ['pages', pageId] });
     },
-    onError: (error) => {
-      console.error("Failed to add link:", error);
-      // You could add toast notification here
+    onError: (error: Error) => {
+      console.error("Error details:", error.message);
+      // You might want to show this error to the user via toast
     }
   });
 
@@ -40,6 +41,10 @@ export function LinkInput({ pageId, onAddLink }: LinkInputProps) {
   }
 
   const handleClick = () => {
+    if (!url.trim()) {
+      console.error("URL cannot be empty");
+      return;
+    }
     mutation.mutate(url);
   }
 
@@ -59,11 +64,16 @@ export function LinkInput({ pageId, onAddLink }: LinkInputProps) {
           variant="outline"
           className="bg-transparent text-white border-gray-700 hover:bg-gray-800"
           onClick={handleClick}
-          disabled={mutation.isPending}
+          disabled={mutation.isPending || !url.trim()}
         >
           {mutation.isPending ? "Adding..." : "Add"}
         </Button>
       </div>
+      {mutation.isError && (
+        <p className="text-red-500 text-sm mt-2">
+          {mutation.error.message}
+        </p>
+      )}
     </div>
   );
 } 
