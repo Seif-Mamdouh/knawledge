@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { createPageSnapshot } from "./pageSnapShot";
 
 async function extractTitleFromHtml(url: string): Promise<string> {
   try {
@@ -21,7 +22,6 @@ async function extractTitleFromHtml(url: string): Promise<string> {
 async function extractTitleFromUrl(url: string): Promise<string> {
   return await extractTitleFromHtml(url);
 }
-
 
 export async function addLinkToPage(url: string, pageId: string) {
   try {
@@ -45,6 +45,13 @@ export async function addLinkToPage(url: string, pageId: string) {
           },
         },
       });
+
+      // Create a page snapshot for the new page
+      const snapshotResult = await createPageSnapshot(newPage.id, cleanUrl, title);
+      if (!snapshotResult.success) {
+        console.error("Failed to create snapshot:", snapshotResult.error);
+      }
+
       revalidatePath(`/summarize`);
       return { success: true, pageId: newPage.id };
     }
@@ -60,6 +67,12 @@ export async function addLinkToPage(url: string, pageId: string) {
         updatedAt: new Date(),
       },
     });
+
+    // Create a new snapshot for the updated page
+    const snapshotResult = await createPageSnapshot(pageId, cleanUrl, title);
+    if (!snapshotResult.success) {
+      console.error("Failed to create snapshot:", snapshotResult.error);
+    }
 
     revalidatePath(`/summarize`);
     return { success: true };
