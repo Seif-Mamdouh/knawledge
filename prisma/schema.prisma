@@ -11,12 +11,85 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
-model users {
+model Users {
   id        Int      @id @default(autoincrement())
   name      String
   email     String   @unique
   image     String
   createdAt DateTime @default(now())
+  pages     Page[]   // Relation field indicating a user has multiple pages
 }
 
+model Page {
+  id             Int             @id @default(autoincrement())
+  title          String
+  content        String?
+  url            String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  userId         Int             // Foreign key
+  user           Users           @relation(fields: [userId], references: [id]) // Relation to Users model
+  pageSnapshots  PageSnapShots[]
+}
 
+model PageSnapShots {
+  page_snapshot_id Int      @id @default(autoincrement())
+  page_id          Int
+  title            String
+  raw_html         String
+  fetched_at       DateTime @default(now())
+  cleaned_html     String?
+  cleaned_at       DateTime?
+  markdown_id      String   @unique
+  page             Page     @relation(fields: [page_id], references: [id])
+}
+
+/// This is a view that shows the latest snapshot for each page
+view LatestSnapshot {
+  page_id          Int     @unique
+  page_snapshot_id Int
+
+  @@map("LatestSnapshot")
+}
+
+model Markdown {
+  markdown_id  Int      @id @default(autoincrement())
+  title        String
+  content_md   String
+  
+  // Relations to child models
+  mdSummaries     MdSummary[]
+  titleEmbeddings TitleEmbedding[]
+  quoteEmbeddings QuoteEmbedding[]
+  categories      Category[]
+}
+
+model MdSummary {
+  note_id          Int     @id @default(autoincrement())
+  note_summary_id  Int
+  summary          String  @db.Text
+  engine_version   String
+  markdown         Markdown @relation(fields: [note_id], references: [markdown_id])
+  
+  @@unique([note_summary_id, engine_version])
+}
+
+model TitleEmbedding {
+  note_id    Int    @id @default(autoincrement())
+  embedding  Bytes
+  markdown   Markdown @relation(fields: [note_id], references: [markdown_id])
+}
+
+model QuoteEmbedding {
+  note_id         Int    @id @default(autoincrement())
+  markdown_start  Int
+  markdown_end    Int
+  embedding       Bytes
+  markdown        Markdown @relation(fields: [note_id], references: [markdown_id])
+}
+
+model Category {
+  note_id    Int     @id @default(autoincrement())
+  category   String
+  markdown   Markdown @relation(fields: [note_id], references: [markdown_id])
+}
