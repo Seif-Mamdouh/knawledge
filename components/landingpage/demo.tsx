@@ -40,6 +40,7 @@ export default function Demo() {
           </p>
         </motion.div>
 
+
         <motion.div
           className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden border border-blue-50"
           initial={{ opacity: 0, y: 30 }}
