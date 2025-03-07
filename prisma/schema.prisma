@@ -13,7 +13,7 @@ datasource db {
 }
 
 model Users {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   name      String
   email     String   @unique
   image     String
@@ -22,20 +22,20 @@ model Users {
 }
 
 model Page {
-  id             Int             @id @default(autoincrement())
+  id             String          @id @default(uuid())
   title          String
   content        String?
   url            String?
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
-  userId         Int             // Foreign key
+  userId         String          // Foreign key changed to String to match Users.id
   user           Users           @relation(fields: [userId], references: [id]) // Relation to Users model
   pageSnapshots  PageSnapShots[]
 }
 
 model PageSnapShots {
-  page_snapshot_id Int      @id @default(autoincrement())
-  page_id          Int
+  page_snapshot_id String   @id @default(uuid())
+  page_id          String   
   title            String
   raw_html         String
   fetched_at       DateTime @default(now())
@@ -47,14 +47,14 @@ model PageSnapShots {
 
 /// This is a view that shows the latest snapshot for each page
 view LatestSnapshot {
-  page_id          Int     @unique
-  page_snapshot_id Int
+  page_id          String  @unique
+  page_snapshot_id String  // Changed to String to match PageSnapShots.page_snapshot_id
 
   @@map("LatestSnapshot")
 }
 
 model Markdown {
-  markdown_id  Int      @id @default(autoincrement())
+  markdown_id  String   @id @default(uuid())
   title        String
   content_md   String
   
@@ -66,8 +66,8 @@ model Markdown {
 }
 
 model MdSummary {
-  note_id          Int     @id @default(autoincrement())
-  note_summary_id  Int
+  note_id          String  @id @default(uuid())
+  note_summary_id  String
   summary          String  @db.Text
   engine_version   String
   markdown         Markdown @relation(fields: [note_id], references: [markdown_id])
@@ -76,13 +76,13 @@ model MdSummary {
 }
 
 model TitleEmbedding {
-  note_id    Int    @id @default(autoincrement())
+  note_id    String  @id @default(uuid())
   embedding  Bytes
   markdown   Markdown @relation(fields: [note_id], references: [markdown_id])
 }
 
 model QuoteEmbedding {
-  note_id         Int    @id @default(autoincrement())
+  note_id         String  @id @default(uuid())
   markdown_start  Int
   markdown_end    Int
   embedding       Bytes
@@ -90,7 +90,7 @@ model QuoteEmbedding {
 }
 
 model Category {
-  note_id    Int     @id @default(autoincrement())
+  note_id    String  @id @default(uuid())
   category   String
   markdown   Markdown @relation(fields: [note_id], references: [markdown_id])
 }
