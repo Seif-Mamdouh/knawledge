@@ -17,8 +17,8 @@ export function LinkInput({ pageId, onAddLink }: LinkInputProps) {
     try {
       const result = await addPage(url);
       if (result.success) {
-        setUrl(""); // Clear input on success
-        onAddLink(url); // Notify parent component
+        setUrl(""); 
+        onAddLink(url);
       }
     } catch (error) {
       console.error("Failed to add link:", error);
