@@ -3,8 +3,7 @@
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { addLinkToPage } from "@/app/actions/links";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { addPage } from "@/app/actions/addPage";
 
 interface LinkInputProps {
   pageId: string;
@@ -12,56 +11,37 @@ interface LinkInputProps {
 }
 
 export function LinkInput({ pageId, onAddLink }: LinkInputProps) {
-  const [url, setUrl] = useState<string>("");
-  const queryClient = useQueryClient();
+  const [url, setUrl] = useState("");
 
-  const mutation = useMutation({
-    mutationFn: async (url: string) => {
-      const result = await addLinkToPage(url, pageId);
-      if (!result.success) {
-        throw new Error(result.error);
+  const handleSubmit = async () => {
+    try {
+      const result = await addPage(url);
+      if (result.success) {
+        setUrl(""); // Clear input on success
+        onAddLink(url); // Notify parent component
       }
-      return result;
-    },
-    onSuccess: () => {
-      onAddLink(url);
-      setUrl("");
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ['pages', pageId] });
-    },
-    onError: (error) => {
+    } catch (error) {
       console.error("Failed to add link:", error);
-      // You could add toast notification here
     }
-  });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUrl(e.target.value);
-  }
-
-  const handleClick = () => {
-    mutation.mutate(url);
-  }
+  };
 
   return (
     <div className="flex flex-col space-y-4 p-4 bg-black rounded-lg border border-gray-800">
       <h3 className="text-center text-white text-sm font-medium">Add URL</h3>
       <div className="flex space-x-2">
         <Input
-          value={url}
-          onChange={handleChange}
           type="text"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
           placeholder="https://example.com"
           className="flex-1 bg-transparent text-white border-gray-700"
-          disabled={mutation.isPending}
         />
         <Button 
+          onClick={handleSubmit}
           variant="outline"
           className="bg-transparent text-white border-gray-700 hover:bg-gray-800"
-          onClick={handleClick}
-          disabled={mutation.isPending}
         >
-          {mutation.isPending ? "Adding..." : "Add"}
+          Add
         </Button>
       </div>
     </div>
