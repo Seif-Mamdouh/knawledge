@@ -1,6 +1,7 @@
 'use server'
 
 import prisma from '@/lib/prisma'
+import { createPageSnapshot } from './createPageSnapshot'
 
 async function extractTitle(url: string): Promise<string> {
   try {
@@ -32,6 +33,8 @@ export async function addPage(url: string) {
         userId: '2f795d09-3e57-4a1c-80a4-a74f0fc4c6ce',
       },
     })
+
+    await createPageSnapshot(page.id)
 
     return { success: true, page }
     
