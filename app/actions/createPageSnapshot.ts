@@ -1,6 +1,8 @@
 'use server'
 
 import prisma from '@/lib/prisma'
+import TurndownService from 'turndown'
+
 
 async function fetchPageContent(url: string): Promise<string> {
   try {
@@ -32,6 +34,40 @@ function cleanHtml(rawHtml: string): string {
   }
 }
 
+async function convertToMarkdown(pageSnapshotId: string) {
+  try {
+    const snapshot = await prisma.pageSnapShots.findUnique({
+      where: { page_snapshot_id: pageSnapshotId }
+    })
+
+    if (!snapshot?.cleaned_html) {
+      throw new Error('No cleaned HTML found')
+    }
+
+    
+    const turndownService = new TurndownService({
+      headingStyle: 'atx',
+      codeBlockStyle: 'fenced'
+    })
+    
+    const markdown = turndownService.turndown(snapshot.cleaned_html)
+
+    
+    await prisma.markdown.update({
+      where: { markdown_id: snapshot.markdown_id },
+      data: {
+        title: snapshot.title,
+        content_md: markdown,
+      }
+    })
+
+    return { success: true }
+  } catch (error) {
+    console.error('Failed to convert to markdown:', error)
+    return { success: false, error: 'Failed to convert to markdown' }
+  }
+}
+
 export async function createPageSnapshot(pageId: string) {
   try {
     const page = await prisma.page.findUnique({
@@ -48,7 +84,7 @@ export async function createPageSnapshot(pageId: string) {
     const markdown = await prisma.markdown.create({
       data: {
         title: page.title,
-        content_md: '',
+        content_md: '', // Initially empty
       }
     })
 
@@ -62,6 +98,9 @@ export async function createPageSnapshot(pageId: string) {
         markdown_id: markdown.markdown_id,
       }
     })
+
+    // Convert to markdown and update the markdown table
+    await convertToMarkdown(snapshot.page_snapshot_id)
 
     return { success: true, snapshot }
 
