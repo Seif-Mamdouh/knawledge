@@ -1,36 +1,9 @@
 'use server'
 
 import prisma from '@/lib/prisma'
-
-async function fetchPageContent(url: string): Promise<string> {
-  try {
-    const response = await fetch(url)
-    const html = await response.text()
-    return html
-  } catch (error) {
-    console.error('Failed to fetch page content:', error)
-    throw new Error('Failed to fetch page content')
-  }
-}
-
-function cleanHtml(rawHtml: string): string {
-  try {
-    let cleanedHtml = rawHtml
-      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-      .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
-      .replace(/<!--[\s\S]*?-->/g, '')
-      .replace(/<img[^>]*(?:width|height)="?[0-2][^"]*"?[^>]*>/gi, '')
-      .replace(/<div[^>]*(?:ad-|ads-|advertisement)[^>]*>[\s\S]*?<\/div>/gi, '')
-      .replace(/<p>\s*<\/p>/gi, '')
-      .replace(/(\r\n|\n|\r){2,}/gm, '\n')
-      .trim()
-
-    return cleanedHtml
-  } catch (error) {
-    console.error('Failed to clean HTML:', error)
-    throw new Error('Failed to clean HTML')
-  }
-}
+import { fetchPageContent } from '@/app/utils/fetchPageContent'
+import { convertToMarkdown } from '@/app/utils/convertToMarkdown'
+import { cleanHtml } from '@/app/utils/cleanHtml'
 
 export async function createPageSnapshot(pageId: string) {
   try {
@@ -48,7 +21,7 @@ export async function createPageSnapshot(pageId: string) {
     const markdown = await prisma.markdown.create({
       data: {
         title: page.title,
-        content_md: '',
+        content_md: '', 
       }
     })
 
@@ -62,6 +35,9 @@ export async function createPageSnapshot(pageId: string) {
         markdown_id: markdown.markdown_id,
       }
     })
+
+    
+    await convertToMarkdown(snapshot.page_snapshot_id)
 
     return { success: true, snapshot }
 
