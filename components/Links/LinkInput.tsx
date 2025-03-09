@@ -5,6 +5,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { addPage } from "@/app/actions/addPage";
 import { useRouter } from "next/navigation";
+import { LoadingCarousel } from "../Summary/LoadingCarousel";
 
 interface LinkInputProps {
   pageId: string;
@@ -32,6 +33,10 @@ export function LinkInput({ pageId, onAddLink }: LinkInputProps) {
       setIsLoading(false);
     }
   };
+
+  if (isLoading) {
+    return <LoadingCarousel />;
+  }
 
   return (
     <div className="flex flex-col space-y-4 p-4 bg-black rounded-lg border border-gray-800">

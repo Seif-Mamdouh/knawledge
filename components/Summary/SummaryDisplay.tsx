@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { getSummary } from '@/app/actions/getSummary'
-import { Card } from '@/components/ui/card'
+import { Card } from '../ui/card'
+import { LoadingCarousel } from './LoadingCarousel'
 
 interface SummaryDisplayProps {
   pageId: string
@@ -16,39 +17,39 @@ export function SummaryDisplay({ pageId }: SummaryDisplayProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const fetchSummary = async () => {
+  useEffect(() => {
     if (!pageId) return;
     
-    setLoading(true)
-    setError(null)
+    setLoading(true); // Set loading immediately when pageId changes
     
-    try {
-      const result = await getSummary(pageId)
-      if (result.success) {
-        setSummary({
-          title: result.title || '',
-          summary: result.summary || ''
-        })
-      } else {
-        setError(result.error || 'Failed to fetch summary')
+    const fetchSummary = async () => {
+      try {
+        const result = await getSummary(pageId)
+        if (result.success) {
+          setSummary({
+            title: result.title || '',
+            summary: result.summary || ''
+          })
+        } else {
+          setError(result.error || 'Failed to fetch summary')
+        }
+      } catch (err) {
+        setError('Failed to fetch summary')
+      } finally {
+        setLoading(false)
       }
-    } catch (err) {
-      setError('Failed to fetch summary')
-    } finally {
-      setLoading(false)
     }
-  }
 
-  useEffect(() => {
-    fetchSummary()
+    // Add a small delay to ensure loading state is visible
+    const timer = setTimeout(() => {
+      fetchSummary()
+    }, 100)
+
+    return () => clearTimeout(timer)
   }, [pageId])
 
   if (loading) {
-    return (
-      <Card className="p-4 mt-4 bg-black/50 border-gray-800">
-        <div className="animate-pulse text-gray-400">Loading summary...</div>
-      </Card>
-    )
+    return <LoadingCarousel />
   }
 
   if (error) {
