@@ -20,7 +20,7 @@ export function SummaryDisplay({ pageId }: SummaryDisplayProps) {
   useEffect(() => {
     if (!pageId) return;
     
-    setLoading(true); // Set loading immediately when pageId changes
+    setLoading(true); 
     
     const fetchSummary = async () => {
       try {
@@ -40,7 +40,6 @@ export function SummaryDisplay({ pageId }: SummaryDisplayProps) {
       }
     }
 
-    // Add a small delay to ensure loading state is visible
     const timer = setTimeout(() => {
       fetchSummary()
     }, 100)
