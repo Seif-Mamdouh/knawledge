@@ -80,9 +80,8 @@ export function LinkInput({ pageId, onAddLink }: LinkInputProps) {
 
   return (
     <>
-
-      <div className="w-full h-[calc(100vh-80px)] flex flex-col items-center justify-center px-4">
-        <div className="w-full max-w-xl space-y-6">
+      <div className={`w-full h-screen flex flex-col px-4 overflow-hidden justify-center`}>
+        <div className="w-full max-w-xl mx-auto space-y-6">
           <div className="text-center space-y-2">
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
