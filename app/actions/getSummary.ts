@@ -4,18 +4,19 @@ import prisma from '@/lib/prisma'
 
 export async function getSummary(pageId: string) {
   try {
-    const snapshot = await prisma.pageSnapShots.findUnique({
-      where: { page_snapshot_id: pageId },
+    const latestSnapshot = await prisma.pageSnapShots.findFirst({
+      where: { page_id: pageId },
+      orderBy: { fetched_at: 'desc' },
       include: { page: true }
     })
 
-    if (!snapshot) {
+    if (!latestSnapshot) {
       return { success: false, error: 'No snapshot found' }
     }
 
     const summary = await prisma.mdSummary.findFirst({
       where: { 
-        note_summary_id: snapshot.page_snapshot_id 
+        note_summary_id: latestSnapshot.page_snapshot_id 
       },
       orderBy: { engine_version: 'desc' }
     })
@@ -23,7 +24,7 @@ export async function getSummary(pageId: string) {
     return { 
       success: true, 
       summary: summary?.summary || '',
-      title: snapshot.title
+      title: latestSnapshot.title
     }
 
   } catch (error) {
