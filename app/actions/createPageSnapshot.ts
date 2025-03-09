@@ -4,6 +4,7 @@ import prisma from '@/lib/prisma'
 import { fetchPageContent } from '@/app/utils/fetchPageContent'
 import { convertToMarkdown } from '@/app/utils/convertToMarkdown'
 import { cleanHtml } from '@/app/utils/cleanHtml'
+import { summarizeContent } from './summarizeContent'
 
 export async function createPageSnapshot(pageId: string) {
   try {
@@ -38,6 +39,8 @@ export async function createPageSnapshot(pageId: string) {
 
     
     await convertToMarkdown(snapshot.page_snapshot_id)
+    
+    await summarizeContent(snapshot.page_snapshot_id)
 
     return { success: true, snapshot }
 
