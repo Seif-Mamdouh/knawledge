@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import { Card } from '../ui/card'
+import { useEffect, useState } from "react"
+import { motion } from "framer-motion"
 
 const loadingMessages = [
   "Extracting knowledge from the webpage... 📚",
@@ -13,7 +13,7 @@ const loadingMessages = [
   "Can't wait to share what I learned... 📖",
   "Making sense of everything... 🎯",
   "Connecting the dots... 🔍",
-  "Preparing your insights... 💡"
+  "Preparing your insights... 💡",
 ]
 
 export function LoadingCarousel() {
@@ -21,24 +21,53 @@ export function LoadingCarousel() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setMessageIndex((current) => 
-        current === loadingMessages.length - 1 ? 0 : current + 1
-      )
+      setMessageIndex((current) => (current === loadingMessages.length - 1 ? 0 : current + 1))
     }, 2000)
 
     return () => clearInterval(interval)
   }, [])
 
   return (
-    <Card className="p-4 mt-4 bg-black/50 border-gray-800">
-      <div className="flex items-center justify-center min-h-[100px]">
-        <div className="text-center">
-          <div className="animate-spin inline-block w-8 h-8 border-4 border-t-blue-500 border-r-transparent border-b-blue-500 border-l-transparent rounded-full mb-4" />
-          <div className="text-gray-300 animate-fade-in">
-            {loadingMessages[messageIndex]}
-          </div>
-        </div>
+    <div className="w-full h-[calc(100vh-80px)] flex flex-col items-center justify-center">
+      <div className="text-center space-y-2 mb-8">
+        <h3 className="text-xl font-semibold text-blue-500">Analyzing Your Content</h3>
+        <p className="text-gray-500 dark:text-gray-400">We&apos;re extracting the key insights</p>
       </div>
-    </Card>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="w-full max-w-xl bg-gray-700/90 rounded-xl p-8"
+      >
+        <div className="flex flex-col items-center justify-center space-y-4">
+          <div className="relative">
+            <div className="w-8 h-8">
+              <motion.div
+                className="absolute w-full h-full border-4 border-blue-500 rounded-full"
+                style={{ borderTopColor: "transparent", borderLeftColor: "transparent" }}
+                animate={{ rotate: 360 }}
+                transition={{
+                  duration: 1,
+                  ease: "linear",
+                  repeat: Number.POSITIVE_INFINITY,
+                }}
+              />
+            </div>
+          </div>
+
+          <motion.div
+            key={messageIndex}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="min-h-[28px] flex items-center justify-center"
+          >
+            <p className="text-gray-200">{loadingMessages[messageIndex]}</p>
+          </motion.div>
+        </div>
+      </motion.div>
+    </div>
   )
-} 
+}
+

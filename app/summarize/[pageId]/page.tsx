@@ -10,15 +10,12 @@ interface SummarizePageProps {
 
 export default function SummarizePage({ params }: SummarizePageProps) {
   return (
-    <div className="container mx-auto py-8">
-      <h1 className="text-2xl font-bold mb-6 text-center">URL Manager</h1>
-      <div className="max-w-md mx-auto">
-        <LinkInput 
-          pageId={params.pageId} 
-          onAddLink={() => {}} 
-        />
-        <SummaryDisplay pageId={params.pageId} />
-      </div>
-    </div>
+    <main className="min-h-screen bg-white dark:bg-gray-900">
+      <LinkInput 
+        pageId={params.pageId} 
+        onAddLink={() => {}} 
+      />
+      <SummaryDisplay pageId={params.pageId} />
+    </main>
   );
-} 
+}
