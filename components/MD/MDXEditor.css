@@ -117,4 +117,4 @@
 /* Focus state */
 .mdx-editor:focus-within {
   @apply ring-2 ring-blue-500/30;
-} 
+}
