@@ -52,6 +52,7 @@ export async function saveUserNotes(pageId: string, content: string) {
     
     revalidatePath(`/summary/${pageId}`)
     
+    
     return { success: true }
   } catch (error) {
     console.error("Failed to save notes:", error)
