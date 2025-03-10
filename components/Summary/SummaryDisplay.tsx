@@ -1,12 +1,15 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { getSummary } from '@/app/actions/getSummary'
 import { motion, AnimatePresence } from 'framer-motion'
 import { LoadingCarousel } from './LoadingCarousel'
 import MDXEditorComponent from '../MD/MDXEditor'
-import { saveUserNotes } from '@/app/actions/saveUserNotes'
-import { getUserNotes } from '@/app/actions/getUserNotes'
+import { 
+  fetchSummary, 
+  fetchUserNotes, 
+  saveNotesToDB, 
+  renderSummaryContent 
+} from './utils'
 
 interface SummaryDisplayProps {
   pageId: string
@@ -23,10 +26,8 @@ export function SummaryDisplay({ pageId }: SummaryDisplayProps) {
   const [isSaving, setIsSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
   
-  
   const userId = "2f795d09-3e57-4a1c-80a4-a74f0fc4c6ce"; 
   
-  // Debounce the notes to avoid too many DB writes
   useEffect(() => {
     if (!pageId) return
     
@@ -37,27 +38,12 @@ export function SummaryDisplay({ pageId }: SummaryDisplayProps) {
       setNotes(savedNotes);
     }
     
-    // Then fetch both summary and notes from DB
-    const fetchData = async () => {
+    const loadData = async () => {
       try {
-        // Fetch summary
-        const summaryResult = await getSummary(pageId)
-        if (summaryResult.success) {
-          setSummary({
-            title: summaryResult.title || '',
-            summary: summaryResult.summary || ''
-          })
-        } else {
-          setError(summaryResult.error || 'Failed to fetch summary')
-        }
-        
-        // Fetch user notes
-        const notesResult = await getUserNotes(pageId)
-        if (notesResult.success && notesResult.notes) {
-          setNotes(notesResult.notes)
-          // Update localStorage with the latest from DB
-          localStorage.setItem(`notes-${pageId}`, notesResult.notes)
-        }
+        await Promise.all([
+          fetchSummary(pageId, { setSummary, setError }),
+          fetchUserNotes(pageId, { setNotes })
+        ])
       } catch (err) {
         setError('Failed to fetch data')
       } finally {
@@ -65,41 +51,20 @@ export function SummaryDisplay({ pageId }: SummaryDisplayProps) {
       }
     }
 
-    fetchData()
+    loadData()
   }, [pageId])
   
-  
-  // Add a debounce mechanism for saving notes
   useEffect(() => {
     if (!pageId || !notes) return
     
-    // Save to localStorage immediately
+  
     localStorage.setItem(`notes-${pageId}`, notes)
     
-    // But debounce the database save
+  
     const timer = setTimeout(() => {
-      const saveNotesToDB = async () => {
-        setIsSaving(true)
-        setSaveError(null)
-        
-        try {
-          const result = await saveUserNotes(pageId, notes)
-          if (!result.success) {
-            console.error("Error saving notes:", result.error);
-            setSaveError(result.error || 'Failed to save notes')
-          }
-        } catch (err) {
-          console.error("Exception saving notes:", err);
-          setSaveError('Failed to save notes')
-        } finally {
-          setIsSaving(false)
-        }
-      }
-      
-      saveNotesToDB()
+      saveNotesToDB(pageId, notes, { setIsSaving, setSaveError })
     }, 1000) // Wait 1 second after typing stops before saving to DB
     
-    // Clean up the timer if notes change again before the timeout
     return () => clearTimeout(timer)
   }, [notes, pageId])
 
@@ -137,35 +102,7 @@ export function SummaryDisplay({ pageId }: SummaryDisplayProps) {
           </div>
 
           <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
-            {summary.summary.split('\n\n').map((paragraph, index) => {
-              const isNumberedPoint = /^\d+\.\s/.test(paragraph)
-              const isHeader = paragraph.includes('**') || paragraph.toLowerCase().includes('key points')
-              
-              if (isHeader) {
-                return (
-                  <h4 key={index} className="text-xl text-gray-200 font-semibold pt-4">
-                    {paragraph.replace(/\*\*/g, '')}
-                  </h4>
-                )
-              }
-              
-              if (isNumberedPoint) {
-                return (
-                  <div key={index} className="pl-6 text-gray-300">
-                    <p className="relative">
-                      <span className="absolute -left-6 text-blue-400 text-lg">•</span>
-                      {paragraph.replace(/^\d+\.\s/, '')}
-                    </p>
-                  </div>
-                )
-              }
-              
-              return (
-                <p key={index} className="text-gray-300 leading-relaxed text-lg">
-                  {paragraph}
-                </p>
-              )
-            })}
+            {renderSummaryContent(summary)}
           </div>
         </div>
 
