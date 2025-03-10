@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { getSummary } from '@/app/actions/getSummary'
 import { motion, AnimatePresence } from 'framer-motion'
 import { LoadingCarousel } from './LoadingCarousel'
+import MDXEditorComponent from '../MD/MDXEditor'
 
 interface SummaryDisplayProps {
   pageId: string
@@ -16,11 +17,18 @@ export function SummaryDisplay({ pageId }: SummaryDisplayProps) {
   } | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [notes, setNotes] = useState('Start taking notes here...')
 
   useEffect(() => {
     if (!pageId) return
     
     setLoading(true); 
+    
+    // Load saved notes from localStorage
+    const savedNotes = localStorage.getItem(`notes-${pageId}`);
+    if (savedNotes) {
+      setNotes(savedNotes);
+    }
     
     const fetchSummary = async () => {
       try {
@@ -113,6 +121,21 @@ export function SummaryDisplay({ pageId }: SummaryDisplayProps) {
             })}
           </div>
         </div>
+
+        <div className="mt-6 bg-gray-700/90 rounded-lg overflow-hidden shadow-xl">
+          <div className="p-6">
+            <MDXEditorComponent 
+              contentEditableClassName="prose prose-invert max-w-none"
+              markdown={notes}
+              onChange={(markdown: string) => {
+                setNotes(markdown);
+                // You can add logic here to save notes to localStorage or backend
+                localStorage.setItem(`notes-${pageId}`, markdown);
+              }}
+            />
+          </div>
+        </div>
+
       </motion.div>
     </AnimatePresence>
   )
