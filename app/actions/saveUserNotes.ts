@@ -8,7 +8,6 @@ export async function saveUserNotes(pageId: string, content: string) {
     // Use a valid user ID from your Users table
     const userId = "2f795d09-3e57-4a1c-80a4-a74f0fc4c6ce"
     
-    // First, get the latest snapshot for this page
     const latestSnapshot = await prisma.pageSnapShots.findFirst({
       where: { page_id: pageId },
       orderBy: { fetched_at: 'desc' }
@@ -21,7 +20,7 @@ export async function saveUserNotes(pageId: string, content: string) {
       }
     }
     
-    // Find the summary using the page snapshot ID
+    
     const summary = await prisma.mdSummary.findFirst({
       where: { 
         note_summary_id: latestSnapshot.page_snapshot_id 
@@ -39,19 +38,50 @@ export async function saveUserNotes(pageId: string, content: string) {
     const summaryId = summary.note_id;
     console.log(`Using summary ID: ${summaryId} for notes`);
     
-    // Try direct SQL approach if Prisma model access is failing
-    // This is a workaround if the Prisma client is having issues with the model
-    const result = await prisma.$executeRaw`
-      INSERT INTO "UserNotes" ("id", "content", "pageId", "userId", "createdAt", "updatedAt")
-      VALUES (gen_random_uuid(), ${content}, ${summaryId}, ${userId}, NOW(), NOW())
-      ON CONFLICT ("userId", "pageId") 
-      DO UPDATE SET "content" = ${content}, "updatedAt" = NOW()
-    `;
     
-    console.log("Notes saved successfully:", result);
+    try {
+      
+      const existingNote = await prisma.userNotes.findUnique({
+        where: {
+          userId_pageId: {
+            userId,
+            pageId: summaryId
+          }
+        }
+      });
+      
+      if (existingNote) {
+        // Update existing note
+        await prisma.userNotes.update({
+          where: {
+            id: existingNote.id
+          },
+          data: {
+            content,
+            updatedAt: new Date()
+          }
+        });
+      } else {
+        // Create new note
+        await prisma.userNotes.create({
+          data: {
+            userId,
+            pageId: summaryId,
+            content
+          }
+        });
+      }
+      
+      console.log("Notes saved successfully");
+    } catch (dbError) {
+      console.error("Database operation failed:", dbError);
+      return { 
+        success: false, 
+        error: `Database operation failed: ${dbError instanceof Error ? dbError.message : String(dbError)}` 
+      }
+    }
     
     revalidatePath(`/summary/${pageId}`)
-    
     
     return { success: true }
   } catch (error) {

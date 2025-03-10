@@ -32,27 +32,29 @@ model Page {
 }
 
 model PageSnapShots {
-  page_snapshot_id String    @id @default(uuid())
-  page_id          String
+  page_snapshot_id String   @id @default(uuid())
+  page_id          String   
   title            String
   raw_html         String
-  fetched_at       DateTime  @default(now())
+  fetched_at       DateTime @default(now())
   cleaned_html     String?
   cleaned_at       DateTime?
-  markdown_id      String    @unique
-  markdown         Markdown  @relation(fields: [markdown_id], references: [markdown_id])
-  page             Page      @relation(fields: [page_id], references: [id])
+  markdown_id      String   @unique
+  page             Page     @relation(fields: [page_id], references: [id])
+  markdown         Markdown @relation(fields: [markdown_id], references: [markdown_id])
 }
 
 model Markdown {
-  markdown_id     String          @id @default(uuid())
-  title           String
-  content_md      String
-  categories      Category?
-  mdSummaries     MdSummary?
-  pageSnapshot    PageSnapShots?
-  quoteEmbeddings QuoteEmbedding?
-  titleEmbeddings TitleEmbedding?
+  markdown_id      String   @id @default(uuid())
+  title            String
+  content_md       String
+  
+  // Relations to child models
+  pageSnapshot     PageSnapShots?  @relation()
+  mdSummaries      MdSummary[]
+  titleEmbeddings  TitleEmbedding[]
+  quoteEmbeddings  QuoteEmbedding[]
+  categories       Category[]
 }
 
 model MdSummary {
