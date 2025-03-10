@@ -5,6 +5,8 @@ import { getSummary } from '@/app/actions/getSummary'
 import { motion, AnimatePresence } from 'framer-motion'
 import { LoadingCarousel } from './LoadingCarousel'
 import MDXEditorComponent from '../MD/MDXEditor'
+import { saveUserNotes } from '@/app/actions/saveUserNotes'
+import { getUserNotes } from '@/app/actions/getUserNotes'
 
 interface SummaryDisplayProps {
   pageId: string
@@ -18,38 +20,79 @@ export function SummaryDisplay({ pageId }: SummaryDisplayProps) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [notes, setNotes] = useState('Start taking notes here...')
-
+  const [isSaving, setIsSaving] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
+  
+  // Hardcoded userId for now - replace with actual user ID from your auth system
+  const userId = "user-1"; // Temporary placeholder
+  
+  // Debounce the notes to avoid too many DB writes
   useEffect(() => {
     if (!pageId) return
     
     setLoading(true); 
     
-    // Load saved notes from localStorage
+    // First try to get notes from localStorage as a fallback
     const savedNotes = localStorage.getItem(`notes-${pageId}`);
     if (savedNotes) {
       setNotes(savedNotes);
     }
     
-    const fetchSummary = async () => {
+    // Then fetch both summary and notes from DB
+    const fetchData = async () => {
       try {
-        const result = await getSummary(pageId)
-        if (result.success) {
+        // Fetch summary
+        const summaryResult = await getSummary(pageId)
+        if (summaryResult.success) {
           setSummary({
-            title: result.title || '',
-            summary: result.summary || ''
+            title: summaryResult.title || '',
+            summary: summaryResult.summary || ''
           })
         } else {
-          setError(result.error || 'Failed to fetch summary')
+          setError(summaryResult.error || 'Failed to fetch summary')
+        }
+        
+        // Fetch user notes
+        const notesResult = await getUserNotes(pageId)
+        if (notesResult.success && notesResult.notes) {
+          setNotes(notesResult.notes)
+          // Update localStorage with the latest from DB
+          localStorage.setItem(`notes-${pageId}`, notesResult.notes)
         }
       } catch (err) {
-        setError('Failed to fetch summary')
+        setError('Failed to fetch data')
       } finally {
         setLoading(false)
       }
     }
 
-    fetchSummary()
+    fetchData()
   }, [pageId])
+  
+  // Save notes to DB when they change (debounced)
+  useEffect(() => {
+    if (!pageId || !notes) return
+    
+    const saveNotesToDB = async () => {
+      setIsSaving(true)
+      setSaveError(null)
+      
+      try {
+        const result = await saveUserNotes(pageId, notes)
+        if (!result.success) {
+          console.error("Error saving notes:", result.error);
+          setSaveError(result.error || 'Failed to save notes')
+        }
+      } catch (err) {
+        console.error("Exception saving notes:", err);
+        setSaveError('Failed to save notes')
+      } finally {
+        setIsSaving(false)
+      }
+    }
+    
+    saveNotesToDB()
+  }, [notes, pageId])
 
   if (loading) {
     return <LoadingCarousel />
@@ -127,12 +170,19 @@ export function SummaryDisplay({ pageId }: SummaryDisplayProps) {
             <h3 className="text-2xl font-semibold text-white text-center">
               Notes
             </h3>
+            {isSaving && (
+              <p className="text-xs text-blue-400 text-center mt-1">Saving...</p>
+            )}
+            {saveError && (
+              <p className="text-xs text-red-400 text-center mt-1">{saveError}</p>
+            )}
           </div>
           <div className="p-6">
             <MDXEditorComponent 
               markdown={notes}
               onChange={(markdown: string) => {
                 setNotes(markdown);
+                // Still use localStorage as a backup
                 localStorage.setItem(`notes-${pageId}`, markdown);
               }}
             />
