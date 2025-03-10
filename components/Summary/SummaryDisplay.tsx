@@ -123,15 +123,19 @@ export function SummaryDisplay({ pageId }: SummaryDisplayProps) {
         </div>
 
         <div className="mt-6 bg-gray-700/90 rounded-lg overflow-hidden shadow-xl">
+          <div className="p-6 border-b border-gray-600/50 bg-gray-700/95">
+            <h3 className="text-2xl font-semibold text-white text-center">
+              Notes
+            </h3>
+          </div>
           <div className="p-6">
             <MDXEditorComponent 
-              contentEditableClassName="prose prose-invert max-w-none"
               markdown={notes}
               onChange={(markdown: string) => {
                 setNotes(markdown);
-                // You can add logic here to save notes to localStorage or backend
                 localStorage.setItem(`notes-${pageId}`, markdown);
               }}
+              className="min-h-[200px] [&_.toolbar]:bg-gray-800 [&_.toolbar]:border-gray-600 [&_.toolbar]:rounded-t-lg [&_.toolbar_button]:text-gray-300 [&_.toolbar_button:hover]:bg-gray-700 [&_.toolbar_button:hover]:text-white [&_.toolbar_select]:bg-gray-800 [&_.toolbar_select]:text-gray-300 [&_.toolbar_select]:border-gray-600"
             />
           </div>
         </div>

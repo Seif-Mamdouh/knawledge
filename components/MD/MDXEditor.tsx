@@ -8,6 +8,11 @@ import {
   quotePlugin,
   thematicBreakPlugin,
   markdownShortcutPlugin,
+  toolbarPlugin,
+  BoldItalicUnderlineToggles,
+  BlockTypeSelect,
+  CreateLink,
+  UndoRedo,
   type MDXEditorMethods,
   type MDXEditorProps,
 } from '@mdxeditor/editor';
@@ -24,9 +29,20 @@ export default function MDXEditorComponent({
         quotePlugin(),
         thematicBreakPlugin(),
         markdownShortcutPlugin(),
+        toolbarPlugin({
+          toolbarContents: () => (
+            <>
+              <UndoRedo />
+              <BoldItalicUnderlineToggles />
+              <BlockTypeSelect />
+              <CreateLink />
+            </>
+          )
+        })
       ]}
       {...props}
       ref={editorRef}
+      className="prose prose-invert max-w-none"
     />
   );
 }
