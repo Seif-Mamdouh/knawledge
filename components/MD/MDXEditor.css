@@ -1,0 +1,61 @@
+/* MDXEditor custom styles */
+
+.mdx-editor {
+  @apply min-h-[200px];
+}
+
+/* Toolbar styles */
+.mdx-editor .toolbar {
+  @apply bg-gray-800 border-gray-600 rounded-t-lg;
+}
+
+.mdx-editor .toolbar_button {
+  @apply text-gray-300;
+}
+
+.mdx-editor .toolbar_button:hover {
+  @apply bg-gray-700 text-white;
+}
+
+.mdx-editor .toolbar_select {
+  @apply bg-gray-800 text-gray-300 border-gray-600;
+}
+
+/* Content styles */
+.mdx-editor [contenteditable] {
+  @apply !text-gray-200;
+}
+
+/* Heading styles */
+.mdx-editor h1 {
+  @apply !text-3xl !text-white !font-bold;
+}
+
+.mdx-editor h2 {
+  @apply !text-2xl !text-white !font-bold;
+}
+
+.mdx-editor h3 {
+  @apply !text-xl !text-white !font-bold;
+}
+
+.mdx-editor h4 {
+  @apply !text-lg !text-white !font-bold;
+}
+
+/* Additional styles for better readability */
+.mdx-editor p {
+  @apply text-gray-300 leading-relaxed;
+}
+
+.mdx-editor ul, .mdx-editor ol {
+  @apply text-gray-300 pl-5;
+}
+
+.mdx-editor blockquote {
+  @apply border-l-4 border-gray-500 pl-4 italic text-gray-400;
+}
+
+.mdx-editor a {
+  @apply text-blue-400 hover:text-blue-300 underline;
+} 

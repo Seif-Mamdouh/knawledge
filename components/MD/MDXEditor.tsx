@@ -20,6 +20,7 @@ import {
   linkPlugin,
   linkDialogPlugin,
 } from '@mdxeditor/editor';
+import './MDXEditor.css';
 
 const HEADING_OPTIONS = [
   {
@@ -46,8 +47,12 @@ const HEADING_OPTIONS = [
 
 export default function MDXEditorComponent({
   editorRef = null,
+  className = '',
   ...props
-}: { editorRef?: ForwardedRef<MDXEditorMethods> | null } & MDXEditorProps) {
+}: { 
+  editorRef?: ForwardedRef<MDXEditorMethods> | null,
+  className?: string 
+} & MDXEditorProps) {
   return (
     <MDXEditor
       plugins={[
@@ -77,6 +82,7 @@ export default function MDXEditorComponent({
       {...props}
       ref={editorRef}
       contentEditableClassName="prose prose-invert max-w-none min-h-[200px] !text-gray-200"
+      className={`mdx-editor ${className}`}
       markdown={props.markdown || ''}
     />
   );
