@@ -117,8 +117,6 @@ export function LinkInput({ pageId, onAddLink }: LinkInputProps) {
               type="url"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
               onKeyDown={handleKeyDown}
               placeholder="https://example.com/article"
               className="flex-1 border-0 bg-transparent px-4 py-3 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-0"
