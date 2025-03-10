@@ -38,6 +38,7 @@ export async function addPage(url: string) {
 
     return { success: true, page }
     
+    
   } catch (error) {
     console.error('Failed to add page:', error)
     return { success: false, error: 'Failed to add page' }

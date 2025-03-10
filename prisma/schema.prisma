@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["views"]
@@ -8,29 +5,30 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 model Users {
-  id        String   @id @default(uuid())
+  id        String      @id @default(uuid())
   name      String
-  email     String   @unique
+  email     String      @unique
   image     String
-  createdAt DateTime @default(now())
-  pages     Page[]   // Relation field indicating a user has multiple pages
+  createdAt DateTime    @default(now())
+  pages     Page[]
+  notes     UserNotes[]
 }
 
 model Page {
-  id             String          @id @default(uuid())
-  title          String
-  content        String?
-  url            String?
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  userId         String          // Foreign key changed to String to match Users.id
-  user           Users           @relation(fields: [userId], references: [id]) // Relation to Users model
-  pageSnapshots  PageSnapShots[]
+  id            String          @id @default(uuid())
+  title         String
+  content       String?
+  url           String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  userId        String
+  user          Users           @relation(fields: [userId], references: [id])
+  pageSnapshots PageSnapShots[]
 }
 
 model PageSnapShots {
@@ -43,54 +41,63 @@ model PageSnapShots {
   cleaned_at       DateTime?
   markdown_id      String   @unique
   page             Page     @relation(fields: [page_id], references: [id])
-}
-
-/// This is a view that shows the latest snapshot for each page
-view LatestSnapshot {
-  page_id          String  @unique
-  page_snapshot_id String  // Changed to String to match PageSnapShots.page_snapshot_id
-
-  @@map("LatestSnapshot")
+  markdown         Markdown @relation(fields: [markdown_id], references: [markdown_id])
 }
 
 model Markdown {
-  markdown_id  String   @id @default(uuid())
-  title        String
-  content_md   String
+  markdown_id      String   @id @default(uuid())
+  title            String
+  content_md       String
   
   // Relations to child models
-  mdSummaries     MdSummary[]
-  titleEmbeddings TitleEmbedding[]
-  quoteEmbeddings QuoteEmbedding[]
-  categories      Category[]
+  pageSnapshot     PageSnapShots?  @relation()
+  mdSummaries      MdSummary[]
+  titleEmbeddings  TitleEmbedding[]
+  quoteEmbeddings  QuoteEmbedding[]
+  categories       Category[]
 }
 
 model MdSummary {
-  note_id          String  @id @default(uuid())
-  note_summary_id  String
-  summary          String  @db.Text
-  engine_version   String
-  markdown         Markdown @relation(fields: [note_id], references: [markdown_id])
-  
+  note_id         String      @id @default(uuid())
+  note_summary_id String
+  summary         String
+  engine_version  String
+  notes           String?
+  markdown        Markdown    @relation(fields: [note_id], references: [markdown_id])
+  userNotes       UserNotes[]
+
   @@unique([note_summary_id, engine_version])
 }
 
+model UserNotes {
+  id        String    @id @default(cuid())
+  content   String
+  pageId    String
+  userId    String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  summary   MdSummary @relation(fields: [pageId], references: [note_id])
+  user      Users     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, pageId])
+}
+
 model TitleEmbedding {
-  note_id    String  @id @default(uuid())
-  embedding  Bytes
-  markdown   Markdown @relation(fields: [note_id], references: [markdown_id])
+  note_id   String   @id @default(uuid())
+  embedding Bytes
+  markdown  Markdown @relation(fields: [note_id], references: [markdown_id])
 }
 
 model QuoteEmbedding {
-  note_id         String  @id @default(uuid())
-  markdown_start  Int
-  markdown_end    Int
-  embedding       Bytes
-  markdown        Markdown @relation(fields: [note_id], references: [markdown_id])
+  note_id        String   @id @default(uuid())
+  markdown_start Int
+  markdown_end   Int
+  embedding      Bytes
+  markdown       Markdown @relation(fields: [note_id], references: [markdown_id])
 }
 
 model Category {
-  note_id    String  @id @default(uuid())
-  category   String
-  markdown   Markdown @relation(fields: [note_id], references: [markdown_id])
+  note_id  String   @id @default(uuid())
+  category String
+  markdown Markdown @relation(fields: [note_id], references: [markdown_id])
 }

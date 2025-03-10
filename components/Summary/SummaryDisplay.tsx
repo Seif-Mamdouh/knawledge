@@ -4,6 +4,9 @@ import { useEffect, useState } from 'react'
 import { getSummary } from '@/app/actions/getSummary'
 import { motion, AnimatePresence } from 'framer-motion'
 import { LoadingCarousel } from './LoadingCarousel'
+import MDXEditorComponent from '../MD/MDXEditor'
+import { saveUserNotes } from '@/app/actions/saveUserNotes'
+import { getUserNotes } from '@/app/actions/getUserNotes'
 
 interface SummaryDisplayProps {
   pageId: string
@@ -16,32 +19,79 @@ export function SummaryDisplay({ pageId }: SummaryDisplayProps) {
   } | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-
+  const [notes, setNotes] = useState('Start taking notes here...')
+  const [isSaving, setIsSaving] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
+  
+  
+  const userId = "2f795d09-3e57-4a1c-80a4-a74f0fc4c6ce"; 
+  
+  // Debounce the notes to avoid too many DB writes
   useEffect(() => {
     if (!pageId) return
     
     setLoading(true); 
     
-    const fetchSummary = async () => {
+    const savedNotes = localStorage.getItem(`notes-${pageId}`);
+    if (savedNotes) {
+      setNotes(savedNotes);
+    }
+    
+    // Then fetch both summary and notes from DB
+    const fetchData = async () => {
       try {
-        const result = await getSummary(pageId)
-        if (result.success) {
+        // Fetch summary
+        const summaryResult = await getSummary(pageId)
+        if (summaryResult.success) {
           setSummary({
-            title: result.title || '',
-            summary: result.summary || ''
+            title: summaryResult.title || '',
+            summary: summaryResult.summary || ''
           })
         } else {
-          setError(result.error || 'Failed to fetch summary')
+          setError(summaryResult.error || 'Failed to fetch summary')
+        }
+        
+        // Fetch user notes
+        const notesResult = await getUserNotes(pageId)
+        if (notesResult.success && notesResult.notes) {
+          setNotes(notesResult.notes)
+          // Update localStorage with the latest from DB
+          localStorage.setItem(`notes-${pageId}`, notesResult.notes)
         }
       } catch (err) {
-        setError('Failed to fetch summary')
+        setError('Failed to fetch data')
       } finally {
         setLoading(false)
       }
     }
 
-    fetchSummary()
+    fetchData()
   }, [pageId])
+  
+  
+  useEffect(() => {
+    if (!pageId || !notes) return
+    
+    const saveNotesToDB = async () => {
+      setIsSaving(true)
+      setSaveError(null)
+      
+      try {
+        const result = await saveUserNotes(pageId, notes)
+        if (!result.success) {
+          console.error("Error saving notes:", result.error);
+          setSaveError(result.error || 'Failed to save notes')
+        }
+      } catch (err) {
+        console.error("Exception saving notes:", err);
+        setSaveError('Failed to save notes')
+      } finally {
+        setIsSaving(false)
+      }
+    }
+    
+    saveNotesToDB()
+  }, [notes, pageId])
 
   if (loading) {
     return <LoadingCarousel />
@@ -69,8 +119,6 @@ export function SummaryDisplay({ pageId }: SummaryDisplayProps) {
         exit={{ opacity: 0, y: -20 }}
         className="w-full relative"
       >
-        <div className="absolute inset-0 bg-gray-700/80 rounded-lg transform translate-y-1 -z-10" />
-        <div className="absolute inset-0 bg-gray-700/60 rounded-lg transform translate-y-2 -z-20" />
         
 
         <div className="bg-gray-700/90 rounded-lg overflow-hidden shadow-xl">
@@ -113,6 +161,30 @@ export function SummaryDisplay({ pageId }: SummaryDisplayProps) {
             })}
           </div>
         </div>
+
+        <div className="mt-6 bg-gray-700/90 rounded-lg overflow-hidden shadow-xl">
+          <div className="p-6 border-b border-gray-600/50 bg-gray-700/95">
+            <h3 className="text-2xl font-semibold text-white text-center">
+              Notes
+            </h3>
+            {isSaving && (
+              <p className="text-xs text-blue-400 text-center mt-1">Saving...</p>
+            )}
+            {saveError && (
+              <p className="text-xs text-red-400 text-center mt-1">{saveError}</p>
+            )}
+          </div>
+          <div className="p-6">
+            <MDXEditorComponent 
+              markdown={notes}
+              onChange={(markdown: string) => {
+                setNotes(markdown);
+                localStorage.setItem(`notes-${pageId}`, markdown);
+              }}
+            />
+          </div>
+        </div>
+
       </motion.div>
     </AnimatePresence>
   )
