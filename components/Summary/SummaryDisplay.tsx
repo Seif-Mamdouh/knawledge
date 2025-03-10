@@ -69,28 +69,38 @@ export function SummaryDisplay({ pageId }: SummaryDisplayProps) {
   }, [pageId])
   
   
+  // Add a debounce mechanism for saving notes
   useEffect(() => {
     if (!pageId || !notes) return
     
-    const saveNotesToDB = async () => {
-      setIsSaving(true)
-      setSaveError(null)
-      
-      try {
-        const result = await saveUserNotes(pageId, notes)
-        if (!result.success) {
-          console.error("Error saving notes:", result.error);
-          setSaveError(result.error || 'Failed to save notes')
-        }
-      } catch (err) {
-        console.error("Exception saving notes:", err);
-        setSaveError('Failed to save notes')
-      } finally {
-        setIsSaving(false)
-      }
-    }
+    // Save to localStorage immediately
+    localStorage.setItem(`notes-${pageId}`, notes)
     
-    saveNotesToDB()
+    // But debounce the database save
+    const timer = setTimeout(() => {
+      const saveNotesToDB = async () => {
+        setIsSaving(true)
+        setSaveError(null)
+        
+        try {
+          const result = await saveUserNotes(pageId, notes)
+          if (!result.success) {
+            console.error("Error saving notes:", result.error);
+            setSaveError(result.error || 'Failed to save notes')
+          }
+        } catch (err) {
+          console.error("Exception saving notes:", err);
+          setSaveError('Failed to save notes')
+        } finally {
+          setIsSaving(false)
+        }
+      }
+      
+      saveNotesToDB()
+    }, 1000) // Wait 1 second after typing stops before saving to DB
+    
+    // Clean up the timer if notes change again before the timeout
+    return () => clearTimeout(timer)
   }, [notes, pageId])
 
   if (loading) {
@@ -119,10 +129,7 @@ export function SummaryDisplay({ pageId }: SummaryDisplayProps) {
         exit={{ opacity: 0, y: -20 }}
         className="w-full relative"
       >
-        
-
         <div className="bg-gray-700/90 rounded-lg overflow-hidden shadow-xl">
-
           <div className="p-6 border-b border-gray-600/50 sticky top-0 bg-gray-700/95 backdrop-blur-sm z-10">
             <h3 className="text-2xl font-semibold text-white text-center">
               {summary.title}
@@ -162,11 +169,13 @@ export function SummaryDisplay({ pageId }: SummaryDisplayProps) {
           </div>
         </div>
 
-        <div className="mt-6 bg-gray-700/90 rounded-lg overflow-hidden shadow-xl">
-          <div className="p-6 border-b border-gray-600/50 bg-gray-700/95">
-            <h3 className="text-2xl font-semibold text-white text-center">
-              Notes
-            </h3>
+          <div className="mt-6 bg-gray-700/90 rounded-lg overflow-hidden shadow-xl mb-6">
+            <MDXEditorComponent 
+              markdown={notes}
+              onChange={(markdown: string) => {
+                setNotes(markdown);
+              }}
+            />
             {isSaving && (
               <p className="text-xs text-blue-400 text-center mt-1">Saving...</p>
             )}
@@ -174,17 +183,6 @@ export function SummaryDisplay({ pageId }: SummaryDisplayProps) {
               <p className="text-xs text-red-400 text-center mt-1">{saveError}</p>
             )}
           </div>
-          <div className="p-6">
-            <MDXEditorComponent 
-              markdown={notes}
-              onChange={(markdown: string) => {
-                setNotes(markdown);
-                localStorage.setItem(`notes-${pageId}`, markdown);
-              }}
-            />
-          </div>
-        </div>
-
       </motion.div>
     </AnimatePresence>
   )
