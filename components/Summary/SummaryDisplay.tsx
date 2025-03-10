@@ -23,8 +23,8 @@ export function SummaryDisplay({ pageId }: SummaryDisplayProps) {
   const [isSaving, setIsSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
   
-  // Hardcoded userId for now - replace with actual user ID from your auth system
-  const userId = "user-1"; // Temporary placeholder
+  
+  const userId = "2f795d09-3e57-4a1c-80a4-a74f0fc4c6ce"; 
   
   // Debounce the notes to avoid too many DB writes
   useEffect(() => {
@@ -32,7 +32,6 @@ export function SummaryDisplay({ pageId }: SummaryDisplayProps) {
     
     setLoading(true); 
     
-    // First try to get notes from localStorage as a fallback
     const savedNotes = localStorage.getItem(`notes-${pageId}`);
     if (savedNotes) {
       setNotes(savedNotes);
@@ -69,7 +68,7 @@ export function SummaryDisplay({ pageId }: SummaryDisplayProps) {
     fetchData()
   }, [pageId])
   
-  // Save notes to DB when they change (debounced)
+  
   useEffect(() => {
     if (!pageId || !notes) return
     
@@ -120,8 +119,6 @@ export function SummaryDisplay({ pageId }: SummaryDisplayProps) {
         exit={{ opacity: 0, y: -20 }}
         className="w-full relative"
       >
-        <div className="absolute inset-0 bg-gray-700/80 rounded-lg transform translate-y-1 -z-10" />
-        <div className="absolute inset-0 bg-gray-700/60 rounded-lg transform translate-y-2 -z-20" />
         
 
         <div className="bg-gray-700/90 rounded-lg overflow-hidden shadow-xl">
@@ -182,7 +179,6 @@ export function SummaryDisplay({ pageId }: SummaryDisplayProps) {
               markdown={notes}
               onChange={(markdown: string) => {
                 setNotes(markdown);
-                // Still use localStorage as a backup
                 localStorage.setItem(`notes-${pageId}`, markdown);
               }}
             />
