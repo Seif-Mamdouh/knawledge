@@ -135,7 +135,7 @@ export function SummaryDisplay({ pageId }: SummaryDisplayProps) {
                 setNotes(markdown);
                 localStorage.setItem(`notes-${pageId}`, markdown);
               }}
-              className="min-h-[200px] [&_.toolbar]:bg-gray-800 [&_.toolbar]:border-gray-600 [&_.toolbar]:rounded-t-lg [&_.toolbar_button]:text-gray-300 [&_.toolbar_button:hover]:bg-gray-700 [&_.toolbar_button:hover]:text-white [&_.toolbar_select]:bg-gray-800 [&_.toolbar_select]:text-gray-300 [&_.toolbar_select]:border-gray-600"
+              className="min-h-[200px] [&_.toolbar]:bg-gray-800 [&_.toolbar]:border-gray-600 [&_.toolbar]:rounded-t-lg [&_.toolbar_button]:text-gray-300 [&_.toolbar_button:hover]:bg-gray-700 [&_.toolbar_button:hover]:text-white [&_.toolbar_select]:bg-gray-800 [&_.toolbar_select]:text-gray-300 [&_.toolbar_select]:border-gray-600 [&_[contenteditable]]:!text-gray-200 [&_h1]:!text-3xl [&_h2]:!text-2xl [&_h3]:!text-xl [&_h4]:!text-lg [&_h1]:!text-white [&_h2]:!text-white [&_h3]:!text-white [&_h4]:!text-white [&_h1]:!font-bold [&_h2]:!font-bold [&_h3]:!font-bold [&_h4]:!font-bold"
             />
           </div>
         </div>

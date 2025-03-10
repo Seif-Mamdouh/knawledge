@@ -15,7 +15,34 @@ import {
   UndoRedo,
   type MDXEditorMethods,
   type MDXEditorProps,
+  AdmonitionDirectiveDescriptor,
+  directivesPlugin,
+  linkPlugin,
+  linkDialogPlugin,
 } from '@mdxeditor/editor';
+
+const HEADING_OPTIONS = [
+  {
+    label: 'Paragraph',
+    value: 'paragraph',
+  },
+  {
+    label: 'Heading 1',
+    value: 'h1',
+  },
+  {
+    label: 'Heading 2',
+    value: 'h2',
+  },
+  {
+    label: 'Heading 3',
+    value: 'h3',
+  },
+  {
+    label: 'Heading 4',
+    value: 'h4',
+  },
+];
 
 export default function MDXEditorComponent({
   editorRef = null,
@@ -24,17 +51,24 @@ export default function MDXEditorComponent({
   return (
     <MDXEditor
       plugins={[
-        headingsPlugin(),
+        headingsPlugin({
+          allowedHeadingLevels: [1, 2, 3, 4, 5, 6]
+        }),
         listsPlugin(),
         quotePlugin(),
         thematicBreakPlugin(),
         markdownShortcutPlugin(),
+        linkPlugin(),
+        linkDialogPlugin(),
+        directivesPlugin({
+          directiveDescriptors: [AdmonitionDirectiveDescriptor]
+        }),
         toolbarPlugin({
           toolbarContents: () => (
             <>
               <UndoRedo />
-              <BoldItalicUnderlineToggles />
               <BlockTypeSelect />
+              <BoldItalicUnderlineToggles />
               <CreateLink />
             </>
           )
@@ -42,7 +76,8 @@ export default function MDXEditorComponent({
       ]}
       {...props}
       ref={editorRef}
-      className="prose prose-invert max-w-none"
+      contentEditableClassName="prose prose-invert max-w-none min-h-[200px] !text-gray-200"
+      markdown={props.markdown || ''}
     />
   );
 }
