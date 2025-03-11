@@ -1,11 +1,16 @@
 'use server'
 
+import { authOptions } from '@/lib/auth'
 import prisma from '@/lib/prisma'
+import { getServerSession } from 'next-auth'
 
 export async function getUserNotes(pageId: string) {
   try {
-    // Use a valid user ID from your Users table
-    const userId = "2f795d09-3e57-4a1c-80a4-a74f0fc4c6ce"
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) {
+      throw new Error('Unauthorized')
+    }
+    const userId = session.user.id
     
     // Check if the user exists
     const user = await prisma.users.findUnique({

@@ -15,8 +15,7 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async signIn({ user, account, profile }) {
       try {
-        // Create or update user in database
-        await prisma.users.upsert({
+        const dbUser = await prisma.users.upsert({
           where: { email: user.email! },
           update: {
             name: user.name!,
@@ -28,11 +27,32 @@ export const authOptions: NextAuthOptions = {
             image: user.image!,
           },
         });
+        
+        user.id = dbUser.id;
         return true;
       } catch (error) {
         console.error('Error saving user:', error);
         return false;
       }
+    },
+    async session({ session }) {
+      const dbUser = await prisma.users.findUnique({
+        where: { email: session.user.email! }
+      });
+      
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: dbUser?.id // Use the ID from your database
+        }
+      };
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
     },
     async redirect({ url, baseUrl }) {
       if (url.startsWith("/")) return `${baseUrl}${url}`
