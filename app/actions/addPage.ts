@@ -2,6 +2,8 @@
 
 import prisma from '@/lib/prisma'
 import { createPageSnapshot } from './createPageSnapshot'
+import { getSession } from 'next-auth/react'
+import { UserSquare } from 'lucide-react'
 
 async function extractTitle(url: string): Promise<string> {
   try {
@@ -19,6 +21,11 @@ async function extractTitle(url: string): Promise<string> {
 }
 
 export async function addPage(url: string) {
+  const session = await getSession()
+  if (!session) {
+    throw new Error('Unauthorized')
+  }
+
   if (!url) {
     throw new Error('URL is required')
   }
@@ -30,7 +37,7 @@ export async function addPage(url: string) {
       data: {
         title: title,
         url: url,
-        userId: '2f795d09-3e57-4a1c-80a4-a74f0fc4c6ce',
+        userId: session?.user?.id,
       },
     })
 
