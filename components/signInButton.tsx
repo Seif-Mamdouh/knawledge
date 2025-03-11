@@ -1,19 +1,14 @@
 'use client'
 
 import { signIn, signOut, useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 export default function SignInButton() {
   const { data: session } = useSession()
+  const router = useRouter()
 
   if (session) {
-    return (
-      <button
-        onClick={() => signOut()}
-        className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
-      >
-        Sign out
-      </button>
-    )
+    router.push('/summarize')
   }
 
   return (
