@@ -10,6 +10,7 @@ import {
   saveNotesToDB, 
   renderSummaryContent 
 } from './utils'
+import { FiShare2 } from 'react-icons/fi'
 
 interface SummaryDisplayProps {
   pageId: string
@@ -25,6 +26,7 @@ export function SummaryDisplay({ pageId }: SummaryDisplayProps) {
   const [notes, setNotes] = useState('Start taking notes here...')
   const [isSaving, setIsSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
+  const [isCopied, setIsCopied] = useState(false)
   
   const userId = "2f795d09-3e57-4a1c-80a4-a74f0fc4c6ce"; 
   
@@ -68,6 +70,22 @@ export function SummaryDisplay({ pageId }: SummaryDisplayProps) {
     return () => clearTimeout(timer)
   }, [notes, pageId])
 
+  const handleShareLink = async () => {
+    const shareUrl = `${window.location.origin}/summarize/${pageId}`
+    
+    try {
+      await navigator.clipboard.writeText(shareUrl)
+      setIsCopied(true)
+      
+      // Reset the "Copied" state after 2 seconds
+      setTimeout(() => {
+        setIsCopied(false)
+      }, 2000)
+    } catch (err) {
+      console.error('Failed to copy link:', err)
+    }
+  }
+
   if (loading) {
     return <LoadingCarousel />
   }
@@ -95,10 +113,17 @@ export function SummaryDisplay({ pageId }: SummaryDisplayProps) {
         className="w-full relative"
       >
         <div className="bg-gray-700/90 rounded-lg overflow-hidden shadow-xl">
-          <div className="p-6 border-b border-gray-600/50 sticky top-0 bg-gray-700/95 backdrop-blur-sm z-10">
-            <h3 className="text-2xl font-semibold text-white text-center">
+          <div className="p-6 border-b border-gray-600/50 sticky top-0 bg-gray-700/95 backdrop-blur-sm z-10 flex justify-between items-center">
+            <h3 className="text-2xl font-semibold text-white text-center flex-grow">
               {summary.title}
             </h3>
+            <button 
+              onClick={handleShareLink}
+              className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 rounded-md text-white text-sm transition-colors"
+            >
+              <FiShare2 className="w-4 h-4" />
+              {isCopied ? 'Copied!' : 'Share'}
+            </button>
           </div>
 
           <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
