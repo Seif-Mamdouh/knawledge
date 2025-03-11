@@ -1,6 +1,9 @@
 import { NextAuthOptions, Profile } from "next-auth";
 import GithubProvider, { GithubProfile } from "next-auth/providers/github";
+import { PrismaClient } from '@prisma/client';
 import { redirect } from "next/navigation";
+
+const prisma = new PrismaClient();
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -11,7 +14,25 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn({ user, account, profile }) {
-      return true;
+      try {
+        // Create or update user in database
+        await prisma.users.upsert({
+          where: { email: user.email! },
+          update: {
+            name: user.name!,
+            image: user.image!,
+          },
+          create: {
+            email: user.email!,
+            name: user.name!,
+            image: user.image!,
+          },
+        });
+        return true;
+      } catch (error) {
+        console.error('Error saving user:', error);
+        return false;
+      }
     },
     async redirect({ url, baseUrl }) {
       if (url.startsWith("/")) return `${baseUrl}${url}`
