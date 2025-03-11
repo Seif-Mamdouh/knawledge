@@ -65,7 +65,7 @@ export function SummaryDisplay({ pageId }: SummaryDisplayProps) {
   
     const timer = setTimeout(() => {
       saveNotesToDB(pageId, notes, { setIsSaving, setSaveError })
-    }, 1000) // Wait 1 second after typing stops before saving to DB
+    }, 1000) 
     
     return () => clearTimeout(timer)
   }, [notes, pageId])
@@ -77,7 +77,6 @@ export function SummaryDisplay({ pageId }: SummaryDisplayProps) {
       await navigator.clipboard.writeText(shareUrl)
       setIsCopied(true)
       
-      // Reset the "Copied" state after 2 seconds
       setTimeout(() => {
         setIsCopied(false)
       }, 2000)
