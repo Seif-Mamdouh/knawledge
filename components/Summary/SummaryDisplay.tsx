@@ -28,8 +28,6 @@ export function SummaryDisplay({ pageId }: SummaryDisplayProps) {
   const [saveError, setSaveError] = useState<string | null>(null)
   const [isCopied, setIsCopied] = useState(false)
   
-  const userId = "2f795d09-3e57-4a1c-80a4-a74f0fc4c6ce"; 
-  
   useEffect(() => {
     if (!pageId) return
     

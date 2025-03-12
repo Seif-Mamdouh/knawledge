@@ -2,11 +2,16 @@
 
 import prisma from '@/lib/prisma'
 import { revalidatePath } from "next/cache"
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'  
 
 export async function saveUserNotes(pageId: string, content: string) {
   try {
-    // Use a valid user ID from your Users table
-    const userId = "2f795d09-3e57-4a1c-80a4-a74f0fc4c6ce"
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) {
+      throw new Error('Unauthorized')
+    }
+    const userId = session.user.id
     
     const latestSnapshot = await prisma.pageSnapShots.findFirst({
       where: { page_id: pageId },
@@ -51,7 +56,6 @@ export async function saveUserNotes(pageId: string, content: string) {
       });
       
       if (existingNote) {
-        // Update existing note
         await prisma.userNotes.update({
           where: {
             id: existingNote.id
@@ -62,7 +66,6 @@ export async function saveUserNotes(pageId: string, content: string) {
           }
         });
       } else {
-        // Create new note
         await prisma.userNotes.create({
           data: {
             userId,

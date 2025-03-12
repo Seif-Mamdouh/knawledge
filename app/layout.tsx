@@ -1,11 +1,9 @@
+'use client'
+
 import './globals.css'
 import { Inter } from 'next/font/google'
 import { Providers } from "./providers";
-
-export const metadata = {
-  metadataBase: new URL('https://postgres-prisma.vercel.app'),
-  title: 'KnowledgeAI',
-}
+import { SessionProvider } from "next-auth/react";
 
 const inter = Inter({
   variable: '--font-inter',
@@ -21,9 +19,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.variable}>
-        <Providers>
-          {children}
-        </Providers>
+        <SessionProvider>
+          <Providers>
+            {children}
+          </Providers>
+        </SessionProvider>
       </body>
     </html>
   )
