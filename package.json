@@ -14,10 +14,9 @@
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "dependencies": {
-    "ai": "^4.1.58",
+    "@ai-sdk/google": "^1.1.22",
     "@ai-sdk/openai": "^1.2.3",
     "@ai-sdk/react": "^1.1.22",
-    "@ai-sdk/google": "^1.0.0",
     "@mdxeditor/editor": "^3.26.0",
     "@prisma/client": "^6.4.1",
     "@radix-ui/react-scroll-area": "^1.2.3",
