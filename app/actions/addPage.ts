@@ -2,9 +2,15 @@
 
 import prisma from '@/lib/prisma'
 import { createPageSnapshot } from './createPageSnapshot'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
 async function extractTitle(url: string): Promise<string> {
   try {
+    const session = await getServerSession(authOptions)
+    if (!session) {
+      throw new Error('Unauthorized')
+    }
     const response = await fetch(url)
     const html = await response.text()
     
@@ -24,21 +30,26 @@ export async function addPage(url: string) {
   }
 
   try {
+    const session = await getServerSession(authOptions)
+    console.log('Session data with ID:', JSON.stringify(session, null, 2))
+    
+    if (!session?.user?.id) {
+      throw new Error('Unauthorized')
+    }
+
     const title = await extractTitle(url)
 
     const page = await prisma.page.create({
       data: {
         title: title,
         url: url,
-        userId: '2f795d09-3e57-4a1c-80a4-a74f0fc4c6ce',
+        userId: session.user.id,
       },
     })
 
     await createPageSnapshot(page.id)
 
     return { success: true, page }
-    
-    
   } catch (error) {
     console.error('Failed to add page:', error)
     return { success: false, error: 'Failed to add page' }

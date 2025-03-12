@@ -42,16 +42,14 @@ export default function Navbar() {
             <span className="text-blue-900 font-bold text-xl">KnowledgeAI</span>
           </Link>
 
-          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             <NavLink href="#features">Features</NavLink>
             <NavLink href="#how-it-works">How It Works</NavLink>
-            <NavLink href="#demo">Demo</NavLink>
-            <NavLink href="#testimonials">Testimonials</NavLink>
-            <Button className="bg-blue-700 hover:bg-blue-800 text-white">Get Started</Button>
+            <Link href="/auth/signin">
+              <Button className="bg-blue-700 hover:bg-blue-800 text-white">Get Started</Button>
+            </Link>
           </nav>
 
-          {/* Mobile Navigation Toggle */}
           <div className="md:hidden">
             <button onClick={() => setIsOpen(!isOpen)} className="text-blue-900">
               {isOpen ? <X size={24} /> : <Menu size={24} />}
@@ -60,7 +58,6 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Navigation Menu */}
       {isOpen && (
         <motion.div
           className="md:hidden bg-white"
@@ -76,13 +73,9 @@ export default function Navbar() {
             <MobileNavLink href="#how-it-works" onClick={() => setIsOpen(false)}>
               How It Works
             </MobileNavLink>
-            <MobileNavLink href="#demo" onClick={() => setIsOpen(false)}>
-              Demo
-            </MobileNavLink>
-            <MobileNavLink href="#testimonials" onClick={() => setIsOpen(false)}>
-              Testimonials
-            </MobileNavLink>
-            <Button className="bg-blue-700 hover:bg-blue-800 text-white w-full">Get Started</Button>
+            <Link href="/auth/signin">
+              <Button className="bg-blue-700 hover:bg-blue-800 text-white w-full">Get Started</Button>
+            </Link>
           </div>
         </motion.div>
       )}
