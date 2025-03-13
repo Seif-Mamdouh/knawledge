@@ -1,6 +1,6 @@
 "use client";
 import { SummaryChat } from "@/components/Chat/SummaryChat";
-import Editor from "@/components/noveleditor/editor";
+import Editor from "../../../components/noveleditor/editor";
 import { useEditor } from "novel";
 
 interface SummarizePageProps {
