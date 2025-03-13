@@ -19,15 +19,15 @@ import { handleImageDrop, handleImagePaste } from 'novel/plugins'
 import {
   slashCommand,
   suggestionItems
-} from '@/components/NovelEditor/slash-command'
-import EditorMenu from '@/components/NovelEditor/editor-menu'
+} from '@/components/noveleditor/slash-command'
+import EditorMenu from '@/components/noveleditor/editor-menu'
 
-import { defaultExtensions } from '@/components/NovelEditor/extensions'
-import { TextButtons } from '@/components/NovelEditor/selectors/text-buttons'
-import { LinkSelector } from '@/components/NovelEditor/selectors/link-selector'
-import { NodeSelector } from '@/components/NovelEditor/selectors/node-selector'
-import { MathSelector } from '@/components/NovelEditor/selectors/math-selector'
-import { ColorSelector } from '@/components/NovelEditor/selectors/color-selector'
+import { defaultExtensions } from '@/components/noveleditor/extensions'
+import { TextButtons } from '@/components/noveleditor/selectors/text-buttons'
+import { LinkSelector } from '@/components/noveleditor/selectors/link-selector'
+import { NodeSelector } from '@/components/noveleditor/selectors/node-selector'
+import { MathSelector } from '@/components/noveleditor/selectors/math-selector'
+import { ColorSelector } from '@/components/noveleditor/selectors/color-selector'
 
 import { Separator } from '@/components/ui/separator'
 import { uploadFn } from '@/components/noveleditor/image-upload'

@@ -1,6 +1,6 @@
 "use client";
 
-import Editor from "@/components/NovelEditor/editor";
+import Editor from "@/components/noveleditor/editor";
 
 import { useEditor } from "novel";
 
