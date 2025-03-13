@@ -15,6 +15,7 @@ import {
 
 import { ImageResizer, handleCommandNavigation } from 'novel/extensions'
 import { handleImageDrop, handleImagePaste } from 'novel/plugins'
+import { Placeholder } from '@tiptap/extension-placeholder'
 
 import {
   slashCommand,
@@ -34,7 +35,21 @@ import { uploadFn } from '@/components/novel/image-upload'
 
 const hljs = require('highlight.js')
 
-const extensions = [...defaultExtensions, slashCommand]
+const extensions = [
+  ...defaultExtensions, 
+  slashCommand,
+  Placeholder.configure({
+    placeholder: ({ node }) => {
+      if (node.type.name === 'paragraph') {
+        return 'Use / to start taking notes'
+      }
+      return ''
+    },
+    includeChildren: true,
+    showOnlyCurrent: false,
+    showOnlyWhenEditable: true,
+  })
+]
 
 export const defaultEditorContent = {
   type: 'doc',
@@ -57,6 +72,9 @@ export default function Editor({ initialValue, onChange }: EditorProps) {
   const [openLink, setOpenLink] = useState(false)
   const [openAI, setOpenAI] = useState(false)
 
+  // Use defaultEditorContent if initialValue is not provided
+  const editorContent = initialValue || defaultEditorContent
+
   //Apply Codeblock Highlighting on the HTML from editor.getHTML()
   const highlightCodeblocks = (content: string) => {
     const doc = new DOMParser().parseFromString(content, 'text/html')
@@ -74,9 +92,9 @@ export default function Editor({ initialValue, onChange }: EditorProps) {
       <EditorRoot>
         <EditorContent
           immediatelyRender={false}
-          initialContent={initialValue}
+          initialContent={editorContent}
           extensions={extensions}
-          className='min-h-[400px] h-full rounded-xl border p-4 bg-white dark:bg-gray-800'
+          className='min-h-[400px] h-full rounded-xl border p-4 bg-white dark:bg-gray-800 placeholder-editor'
           editorProps={{
             handleDOMEvents: {
               keydown: (_view, event) => handleCommandNavigation(event)
