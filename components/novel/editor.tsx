@@ -19,18 +19,18 @@ import { handleImageDrop, handleImagePaste } from 'novel/plugins'
 import {
   slashCommand,
   suggestionItems
-} from '@/components/noveleditor/slash-command'
-import EditorMenu from '@/components/noveleditor/editor-menu'
+} from '@/components/novel/slash-command'
+import EditorMenu from '@/components/novel/editor-menu'
 
-import { defaultExtensions } from '@/components/noveleditor/extensions'
-import { TextButtons } from '@/components/noveleditor/selectors/text-buttons'
-import { LinkSelector } from '@/components/noveleditor/selectors/link-selector'
-import { NodeSelector } from '@/components/noveleditor/selectors/node-selector'
-import { MathSelector } from '@/components/noveleditor/selectors/math-selector'
-import { ColorSelector } from '@/components/noveleditor/selectors/color-selector'
+import { defaultExtensions } from '@/components/novel/extensions'
+import { TextButtons } from '@/components/novel/selectors/text-buttons'
+import { LinkSelector } from '@/components/novel/selectors/link-selector'
+import { NodeSelector } from '@/components/novel/selectors/node-selector'
+import { MathSelector } from '@/components/novel/selectors/math-selector'
+import { ColorSelector } from '@/components/novel/selectors/color-selector'
 
 import { Separator } from '@/components/ui/separator'
-import { uploadFn } from '@/components/noveleditor/image-upload'
+import { uploadFn } from '@/components/novel/image-upload'
 
 const hljs = require('highlight.js')
 

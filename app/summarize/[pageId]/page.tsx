@@ -1,5 +1,5 @@
 "use client";
-import Editor from "@/components/Chat/editor";
+import Editor from "@/components/novel/editor";
 import { SummaryChat } from "@/components/Chat/SummaryChat";
 import { useEditor } from "novel";
 
