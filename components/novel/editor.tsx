@@ -69,13 +69,14 @@ export default function Editor({ initialValue, onChange }: EditorProps) {
   }
 
   return (
-    <div className='relative w-full max-w-screen-lg'>
+    <div className='relative w-full h-full'>
+      <div className="text-xl font-bold mb-4 text-left">📝 Take notes here</div>
       <EditorRoot>
         <EditorContent
           immediatelyRender={false}
           initialContent={initialValue}
           extensions={extensions}
-          className='min-h-96 rounded-xl border p-4'
+          className='min-h-[400px] h-full rounded-xl border p-4 bg-white dark:bg-gray-800'
           editorProps={{
             handleDOMEvents: {
               keydown: (_view, event) => handleCommandNavigation(event)

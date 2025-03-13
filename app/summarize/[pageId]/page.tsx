@@ -14,12 +14,14 @@ export default function SummarizePage({ params }: SummarizePageProps) {
   return (
     <main className="min-h-screen w-full bg-white dark:bg-gray-900 flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-7xl">
-        <div className="flex flex-col md:flex-row gap-4 items-center justify-center">
+        <div className="flex flex-col md:flex-row gap-4 items-stretch justify-center">
           <div className="w-full md:w-1/2 flex justify-center">
             <SummaryChat pageId={params.pageId} />
           </div>
           <div className="w-full md:w-1/2 flex justify-center">
-            <Editor initialValue={editor?.getJSON()} onChange={() => {}} />
+            <div className="w-full h-full">
+              <Editor initialValue={editor?.getJSON()} onChange={() => {}} />
+            </div>
           </div>
         </div>
       </div>
