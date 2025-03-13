@@ -9,7 +9,6 @@ export async function POST(req: Request) {
   
   let systemPrompt = 'You are a helpful assistant that answers questions clearly and concisely.';
   
-  // If pageId is provided, get the summary and add context
   if (pageId) {
     try {
       const summaryResult = await getSummary(pageId);

@@ -2,7 +2,7 @@
 
 import { useChat } from '@ai-sdk/react';
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { renderSummaryContent } from '@/components/Summary/utils/renderSummaryContent';
+import { renderSummaryContent } from '@/components/Chat/Summary/utils/renderSummaryContent';
 import { getSummary } from '@/app/actions/getSummary';
 import { Loader2 } from 'lucide-react';
 
