@@ -2,7 +2,7 @@
 
 import { useChat } from '@ai-sdk/react';
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { renderSummaryContent } from '@/components/Chat/Summary/utils/renderSummaryContent';
+import { renderSummaryContent, renderMessageContent } from '@/components/Chat/Summary/utils';
 import { getSummary } from '@/app/actions/getSummary';
 import { Loader2 } from 'lucide-react';
 
@@ -130,7 +130,6 @@ export function SummaryChat({ pageId }: SummaryChatProps) {
     <div className="w-full">
       <h2 className="text-xl font-bold mb-4">Summary Analysis</h2>
       
-      {/* Loading stages visualization */}
       {loadingStage && !summaryLoaded && (
         <div className="mb-6 border rounded-lg p-4 bg-gray-50 dark:bg-gray-800">
           <div className="space-y-4">
@@ -178,7 +177,6 @@ export function SummaryChat({ pageId }: SummaryChatProps) {
         </div>
       )}
       
-      {/* Messages display with auto-scroll */}
       <div 
         ref={messagesContainerRef}
         className="space-y-4 max-h-[500px] overflow-y-auto mb-4 p-4 border rounded-lg bg-gray-50 dark:bg-gray-800"
@@ -202,13 +200,13 @@ export function SummaryChat({ pageId }: SummaryChatProps) {
             <div className="font-semibold mb-1">
               {message.role === 'user' ? 'You' : 'AI Assistant'}
             </div>
-            <div className="prose dark:prose-invert text-black dark:text-white">
+            <div className="text-black dark:text-white text-lg">
               {message.role === 'assistant' && message.content.includes('# ') 
                 ? renderSummaryContent({
                     title: message.content.split('\n')[0].replace('# ', ''),
                     summary: message.content.split('\n').slice(2).join('\n')
                   })
-                : message.content}
+                : renderMessageContent(message.content)}
             </div>
           </div>
         ))}

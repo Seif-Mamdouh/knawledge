@@ -14,7 +14,7 @@ export const renderSummaryContent = (summary: SummaryData | null) => {
     
     if (isHeader) {
       return (
-        <h4 key={index} className="text-xl text-black dark:text-white font-semibold pt-4">
+        <h4 key={index} className="text-lg text-black dark:text-white font-semibold pt-4">
           {paragraph.replace(/\*\*/g, '')}
         </h4>
       )
@@ -22,7 +22,7 @@ export const renderSummaryContent = (summary: SummaryData | null) => {
     
     if (isNumberedPoint) {
       return (
-        <div key={index} className="pl-6 text-black dark:text-white">
+        <div key={index} className="pl-6 text-black dark:text-white text-lg">
           <p className="relative">
             <span className="absolute -left-6 text-blue-400 text-lg">•</span>
             {paragraph.replace(/^\d+\.\s/, '')}
