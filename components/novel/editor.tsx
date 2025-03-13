@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 
 import {
   EditorCommand,
@@ -15,7 +15,6 @@ import {
 
 import { ImageResizer, handleCommandNavigation } from 'novel/extensions'
 import { handleImageDrop, handleImagePaste } from 'novel/plugins'
-import { Placeholder } from '@tiptap/extension-placeholder'
 
 import {
   slashCommand,
@@ -37,18 +36,7 @@ const hljs = require('highlight.js')
 
 const extensions = [
   ...defaultExtensions, 
-  slashCommand,
-  Placeholder.configure({
-    placeholder: ({ node }) => {
-      if (node.type.name === 'paragraph') {
-        return 'Use / to start taking notes'
-      }
-      return ''
-    },
-    includeChildren: true,
-    showOnlyCurrent: false,
-    showOnlyWhenEditable: true,
-  })
+  slashCommand
 ]
 
 export const defaultEditorContent = {
@@ -71,7 +59,7 @@ export default function Editor({ initialValue, onChange }: EditorProps) {
   const [openColor, setOpenColor] = useState(false)
   const [openLink, setOpenLink] = useState(false)
   const [openAI, setOpenAI] = useState(false)
-
+  
   // Use defaultEditorContent if initialValue is not provided
   const editorContent = initialValue || defaultEditorContent
 
@@ -94,7 +82,7 @@ export default function Editor({ initialValue, onChange }: EditorProps) {
           immediatelyRender={false}
           initialContent={editorContent}
           extensions={extensions}
-          className='min-h-[400px] h-full rounded-xl border p-4 bg-white dark:bg-gray-800 placeholder-editor'
+          className='min-h-[400px] h-full rounded-xl border p-4 bg-white dark:bg-gray-800'
           editorProps={{
             handleDOMEvents: {
               keydown: (_view, event) => handleCommandNavigation(event)
