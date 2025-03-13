@@ -1,5 +1,6 @@
 "use client";
 import { SummaryDisplay } from "@/components/Summary/SummaryDisplay";
+import { SummaryChat } from "@/components/Chat/SummaryChat";
 
 interface SummarizePageProps {
   params: {
@@ -9,9 +10,12 @@ interface SummarizePageProps {
 
 export default function SummarizePage({ params }: SummarizePageProps) {
   return (
-    <main className="min-h-screen w-full bg-white dark:bg-gray-900 flex items-center justify-center p-4">
+    <main className="min-h-screen w-full bg-white dark:bg-gray-900 flex flex-col items-center p-4">
       <div className="w-full max-w-7xl">
-        <SummaryDisplay pageId={params.pageId} />
+        {/* Chat interface for the summary */}
+        <div className="mt-8 border-t pt-8">
+          <SummaryChat pageId={params.pageId} />
+        </div>
       </div>
     </main>
   );

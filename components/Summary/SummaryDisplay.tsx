@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { LoadingCarousel } from './LoadingCarousel'
 import MDXEditorComponent from '../MD/MDXEditor'
 import { 
   fetchSummary, 
@@ -81,10 +80,6 @@ export function SummaryDisplay({ pageId }: SummaryDisplayProps) {
     } catch (err) {
       console.error('Failed to copy link:', err)
     }
-  }
-
-  if (loading) {
-    return <LoadingCarousel />
   }
 
   if (error) {

@@ -7,13 +7,12 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { addPage } from "@/app/actions/addPage"
 import { useRouter } from "next/navigation"
-import { LoadingCarousel } from "../Summary/LoadingCarousel"
 import { motion, AnimatePresence } from "framer-motion"
 import { Search, Link, ArrowRight } from "lucide-react"
 
 interface LinkInputProps {
   pageId: string
-  onAddLink?: (url: string) => void
+  onAddLink?: (url: string, pageId: string) => void
 }
 
 export function LinkInput({ pageId, onAddLink }: LinkInputProps) {
@@ -21,6 +20,7 @@ export function LinkInput({ pageId, onAddLink }: LinkInputProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [isValidUrl, setIsValidUrl] = useState(true)
   const [isFocused, setIsFocused] = useState(false)
+  const [newPageId, setNewPageId] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
 
@@ -45,13 +45,21 @@ export function LinkInput({ pageId, onAddLink }: LinkInputProps) {
       const result = await addPage(url)
 
       if (result.success && result.page) {
-        setUrl("")
-        onAddLink?.(url)
-        router.push(`/summarize/${result.page.id}`)
+        setNewPageId(result.page.id)
+        
+        if (onAddLink) {
+          onAddLink(url, result.page.id)
+          setUrl("")
+          setIsLoading(false)
+        } else {
+          setUrl("")
+          router.push(`/summarize/${result.page.id}`)
+        }
+      } else {
+        setIsLoading(false)
       }
     } catch (error) {
       console.error("Failed to add link:", error)
-    } finally {
       setIsLoading(false)
     }
   }
@@ -62,20 +70,9 @@ export function LinkInput({ pageId, onAddLink }: LinkInputProps) {
     }
   }
 
-  if (isLoading) {
-    return (
-      <div className="w-full h-[calc(100vh-80px)] flex items-center justify-center">
-        <div className="w-full max-w-xl px-6">
-          <div className="text-center mb-8">
-            <h3 className="text-xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-400">
-              Analyzing Your Content
-            </h3>
-            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">We&apos;re extracting the key insights</p>
-          </div>
-          <LoadingCarousel />
-        </div>
-      </div>
-    )
+  if (isLoading && newPageId && !onAddLink) {
+    router.push(`/summarize/${newPageId}`)
+    return null;
   }
 
   return (
@@ -163,14 +160,16 @@ export function LinkInput({ pageId, onAddLink }: LinkInputProps) {
               disabled={!url || !isValidUrl || isLoading}
               className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 transition-all duration-200 flex items-center justify-center group rounded-lg"
             >
-              <span>Analyze Content</span>
-              <motion.div
-                animate={{ x: url && isValidUrl ? [0, 4, 0] : 0 }}
-                transition={{ repeat: Number.POSITIVE_INFINITY, repeatDelay: 2, duration: 0.6 }}
-                className="ml-2"
-              >
-                <ArrowRight className="h-5 w-5" />
-              </motion.div>
+              <span>{isLoading ? "Processing..." : "Analyze Content"}</span>
+              {!isLoading && (
+                <motion.div
+                  animate={{ x: url && isValidUrl ? [0, 4, 0] : 0 }}
+                  transition={{ repeat: Number.POSITIVE_INFINITY, repeatDelay: 2, duration: 0.6 }}
+                  className="ml-2"
+                >
+                  <ArrowRight className="h-5 w-5" />
+                </motion.div>
+              )}
             </Button>
           </motion.div>
 

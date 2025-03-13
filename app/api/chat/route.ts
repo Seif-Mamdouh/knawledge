@@ -1,29 +1,35 @@
 import { openai } from '@ai-sdk/openai';
 import { streamText } from 'ai';
-import { summarizeContent } from '@/app/actions/summarizeContent';
+import { getSummary } from '@/app/actions/getSummary';
 
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-  const { messages, pageSnapshotId } = await req.json();
-
-  // Call the summarizeContent server action
-  const { success, summary, error } = await summarizeContent(pageSnapshotId);
+  const { messages, pageId } = await req.json();
   
-  if (!success) {
-    return new Response(JSON.stringify({ error }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
+  let systemPrompt = 'You are a helpful assistant that answers questions clearly and concisely.';
+  
+  // If pageId is provided, get the summary and add context
+  if (pageId) {
+    try {
+      const summaryResult = await getSummary(pageId);
+      
+      if (summaryResult.success && summaryResult.summary) {
+        systemPrompt = `You are a helpful assistant discussing the following content:
+Title: ${summaryResult.title}
+Summary: ${summaryResult.summary}
+
+Answer questions based on this content. If you don't know the answer based on the provided content, say so.`;
+      }
+    } catch (error) {
+      console.error("Error fetching summary for context:", error);
+    }
   }
 
   const result = streamText({
     model: openai('gpt-4o-mini'),
-    system: 'You are a helpful assistant that creates concise summaries of content. Focus on the main points and key takeaways.',
-    messages: [
-      ...messages,
-      { role: 'assistant', content: summary?.summary || '' }
-    ],
+    system: systemPrompt,
+    messages,
   });
 
   return result.toDataStreamResponse();
