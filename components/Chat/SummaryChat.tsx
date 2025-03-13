@@ -1,7 +1,7 @@
 "use client";
 
 import { useChat } from '@ai-sdk/react';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { renderSummaryContent } from '@/components/Summary/utils/renderSummaryContent';
 import { getSummary } from '@/app/actions/getSummary';
 import { Loader2 } from 'lucide-react';
@@ -11,6 +11,8 @@ interface SummaryChatProps {
 }
 
 export function SummaryChat({ pageId }: SummaryChatProps) {
+  // Track if summary has been requested to prevent duplicate requests
+  const [summaryRequested, setSummaryRequested] = useState(false);
   const [summaryLoaded, setSummaryLoaded] = useState(false);
   const [summaryData, setSummaryData] = useState<{ title: string; summary: string } | null>(null);
   const [loadingStage, setLoadingStage] = useState<'fetching' | 'processing' | 'formatting' | 'complete' | null>(null);
@@ -19,7 +21,10 @@ export function SummaryChat({ pageId }: SummaryChatProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   
-  const { messages, input, handleInputChange, handleSubmit, append } = useChat({
+  // Use a ref to track if summary has been added to chat
+  const summaryAddedToChat = useRef(false);
+  
+  const { messages, input, handleInputChange, handleSubmit, append, setMessages } = useChat({
     initialMessages: [],
     id: `summary-chat-${pageId}`,
     body: {
@@ -28,21 +33,38 @@ export function SummaryChat({ pageId }: SummaryChatProps) {
   });
 
   // Auto-scroll to the bottom when messages change
-  const scrollToBottom = () => {
+  const scrollToBottom = useCallback(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  };
+  }, []);
 
   // Scroll to bottom when messages change
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, scrollToBottom]);
+
+  // Clear any existing summary messages when component mounts or pageId changes
+  useEffect(() => {
+    // Reset state when pageId changes
+    setSummaryRequested(false);
+    setSummaryLoaded(false);
+    setSummaryData(null);
+    setLoadingStage(null);
+    summaryAddedToChat.current = false;
+    
+    // Clear any existing messages
+    setMessages([]);
+  }, [pageId, setMessages]);
 
   // Load the summary and show the loading stages
   useEffect(() => {
+    // Prevent multiple summary requests
+    if (summaryRequested || summaryLoaded) return;
+    
     const loadSummary = async () => {
-      if (summaryLoaded) return;
+      // Set flag to prevent duplicate requests
+      setSummaryRequested(true);
       
       try {
         // Stage 1: Fetching
@@ -69,23 +91,55 @@ export function SummaryChat({ pageId }: SummaryChatProps) {
           setLoadingStage('complete');
           
           // Add the summary to the chat after a short delay
-          setTimeout(() => {
-            append({
-              role: 'assistant',
-              content: `# ${result.title || 'Summary'}\n\n${result.summary}`
-            });
-            
-            setSummaryLoaded(true);
-          }, 500);
+          // Only if it hasn't been added yet
+          if (!summaryAddedToChat.current) {
+            setTimeout(() => {
+              // Set the flag first to prevent race conditions
+              summaryAddedToChat.current = true;
+              
+              // Clear any existing messages first
+              setMessages([]);
+              
+              // Then add the summary
+              append({
+                role: 'assistant',
+                content: `# ${result.title || 'Summary'}\n\n${result.summary}`
+              });
+              
+              setSummaryLoaded(true);
+            }, 500);
+          }
+        } else {
+          console.error("Failed to get summary:", result);
+          setSummaryRequested(false); // Allow retry
         }
       } catch (error) {
         console.error("Error loading summary:", error);
         setLoadingStage(null);
+        setSummaryRequested(false); // Allow retry
       }
     };
     
     loadSummary();
-  }, [pageId, append, summaryLoaded]);
+  }, [pageId, append, summaryLoaded, summaryRequested, setMessages]);
+
+  // Custom submit handler to prevent duplicate messages
+  const handleMessageSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!input.trim()) return;
+    
+    // Process the form submission
+    handleSubmit(e);
+    
+    // Focus back on input after submission
+    const inputElement = (e.currentTarget as HTMLFormElement).querySelector('input');
+    if (inputElement) {
+      setTimeout(() => {
+        inputElement.focus();
+      }, 0);
+    }
+  };
 
   return (
     <div className="w-full">
@@ -145,6 +199,12 @@ export function SummaryChat({ pageId }: SummaryChatProps) {
         className="space-y-4 max-h-[500px] overflow-y-auto mb-4 p-4 border rounded-lg bg-gray-50 dark:bg-gray-800"
         style={{ scrollBehavior: 'smooth' }}
       >
+        {messages.length === 0 && !loadingStage && (
+          <div className="text-center text-gray-500 py-8">
+            Loading summary...
+          </div>
+        )}
+        
         {messages.map(message => (
           <div 
             key={message.id} 
@@ -157,7 +217,7 @@ export function SummaryChat({ pageId }: SummaryChatProps) {
             <div className="font-semibold mb-1">
               {message.role === 'user' ? 'You' : 'AI Assistant'}
             </div>
-            <div className="prose dark:prose-invert">
+            <div className="prose dark:prose-invert text-black dark:text-white">
               {message.role === 'assistant' && message.content.includes('# ') 
                 ? renderSummaryContent({
                     title: message.content.split('\n')[0].replace('# ', ''),
@@ -174,16 +234,7 @@ export function SummaryChat({ pageId }: SummaryChatProps) {
       {/* Chat input */}
       {summaryLoaded && (
         <form 
-          onSubmit={(e) => {
-            handleSubmit(e);
-            // Focus back on input after submission
-            const inputElement = e.currentTarget.querySelector('input');
-            if (inputElement) {
-              setTimeout(() => {
-                inputElement.focus();
-              }, 0);
-            }
-          }} 
+          onSubmit={handleMessageSubmit}
           className="flex gap-2"
         >
           <input
