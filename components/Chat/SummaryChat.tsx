@@ -57,50 +57,38 @@ export function SummaryChat({ pageId }: SummaryChatProps) {
     setMessages([]);
   }, [pageId, setMessages]);
 
-  // Load the summary and show the loading stages
   useEffect(() => {
-    // Prevent multiple summary requests
     if (summaryRequested || summaryLoaded) return;
     
     const loadSummary = async () => {
-      // Set flag to prevent duplicate requests
       setSummaryRequested(true);
       
       try {
-        // Stage 1: Fetching
         setLoadingStage('fetching');
-        await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate delay
-        
-        // Stage 2: Processing
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
         setLoadingStage('processing');
         const result = await getSummary(pageId);
-        await new Promise(resolve => setTimeout(resolve, 800)); // Simulate delay
+        await new Promise(resolve => setTimeout(resolve, 800)); 
         
         if (result.success && result.summary) {
-          // Stage 3: Formatting
           setLoadingStage('formatting');
-          await new Promise(resolve => setTimeout(resolve, 600)); // Simulate delay
+          await new Promise(resolve => setTimeout(resolve, 600)); 
           
-          // Set the summary data
           setSummaryData({
             title: result.title || 'Summary',
             summary: result.summary
           });
           
-          // Stage 4: Complete
           setLoadingStage('complete');
           
-          // Add the summary to the chat after a short delay
-          // Only if it hasn't been added yet
           if (!summaryAddedToChat.current) {
             setTimeout(() => {
-              // Set the flag first to prevent race conditions
               summaryAddedToChat.current = true;
               
-              // Clear any existing messages first
+              
               setMessages([]);
               
-              // Then add the summary
               append({
                 role: 'assistant',
                 content: `# ${result.title || 'Summary'}\n\n${result.summary}`
@@ -123,16 +111,13 @@ export function SummaryChat({ pageId }: SummaryChatProps) {
     loadSummary();
   }, [pageId, append, summaryLoaded, summaryRequested, setMessages]);
 
-  // Custom submit handler to prevent duplicate messages
   const handleMessageSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!input.trim()) return;
     
-    // Process the form submission
     handleSubmit(e);
     
-    // Focus back on input after submission
     const inputElement = (e.currentTarget as HTMLFormElement).querySelector('input');
     if (inputElement) {
       setTimeout(() => {
@@ -227,11 +212,10 @@ export function SummaryChat({ pageId }: SummaryChatProps) {
             </div>
           </div>
         ))}
-        {/* Invisible element to scroll to */}
+      
         <div ref={messagesEndRef} />
       </div>
       
-      {/* Chat input */}
       {summaryLoaded && (
         <form 
           onSubmit={handleMessageSubmit}
