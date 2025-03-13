@@ -15,3 +15,6 @@ This project is an AI-powered tool designed to analyze and summarize knowledge c
 - Frontend: React.js with modern UI components
 - Backend: NLP libraries
 - AI Models: Transformer-based language models for text analysis
+
+## 📜 License
+This project is distributed under the [MIT License](https://opensource.org/license/mit).
