@@ -5,23 +5,18 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import { renderSummaryContent, renderMessageContent } from '@/components/Chat/Summary/utils';
 import { getSummary } from '@/app/actions/getSummary';
 import { Loader2 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 
 interface SummaryChatProps {
   pageId: string;
 }
 
 export function SummaryChat({ pageId }: SummaryChatProps) {
-  // Track if summary has been requested to prevent duplicate requests
-  const [summaryRequested, setSummaryRequested] = useState(false);
-  const [summaryLoaded, setSummaryLoaded] = useState(false);
-  const [summaryData, setSummaryData] = useState<{ title: string; summary: string } | null>(null);
   const [loadingStage, setLoadingStage] = useState<'fetching' | 'processing' | 'formatting' | 'complete' | null>(null);
   
-  // Reference to the messages container for auto-scrolling
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   
-  // Use a ref to track if summary has been added to chat
   const summaryAddedToChat = useRef(false);
   
   const { messages, input, handleInputChange, handleSubmit, append, setMessages } = useChat({
@@ -32,84 +27,61 @@ export function SummaryChat({ pageId }: SummaryChatProps) {
     },
   });
 
-  // Auto-scroll to the bottom when messages change
+  const { data: summaryData, isLoading, isError, error } = useQuery({
+    queryKey: ['summary', pageId],
+    queryFn: async () => {
+      setLoadingStage('fetching');
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      setLoadingStage('processing');
+      const result = await getSummary(pageId);
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      if (!result.success || !result.summary) {
+        throw new Error("Failed to get summary");
+      }
+      
+      setLoadingStage('formatting');
+      await new Promise(resolve => setTimeout(resolve, 600));
+      
+      setLoadingStage('complete');
+      
+      return {
+        title: result.title || 'Summary',
+        summary: result.summary
+      };
+    },
+  });
+
   const scrollToBottom = useCallback(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, []);
 
-  // Scroll to bottom when messages change
   useEffect(() => {
     scrollToBottom();
   }, [messages, scrollToBottom]);
 
-  // Clear any existing summary messages when component mounts or pageId changes
   useEffect(() => {
-    // Reset state when pageId changes
-    setSummaryRequested(false);
-    setSummaryLoaded(false);
-    setSummaryData(null);
-    setLoadingStage(null);
     summaryAddedToChat.current = false;
-    
-    // Clear any existing messages
     setMessages([]);
   }, [pageId, setMessages]);
 
   useEffect(() => {
-    if (summaryRequested || summaryLoaded) return;
-    
-    const loadSummary = async () => {
-      setSummaryRequested(true);
-      
-      try {
-        setLoadingStage('fetching');
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
-        setLoadingStage('processing');
-        const result = await getSummary(pageId);
-        await new Promise(resolve => setTimeout(resolve, 800)); 
+    if (summaryData && !summaryAddedToChat.current) {
+      setTimeout(() => {
+        summaryAddedToChat.current = true;
         
-        if (result.success && result.summary) {
-          setLoadingStage('formatting');
-          await new Promise(resolve => setTimeout(resolve, 600)); 
-          
-          setSummaryData({
-            title: result.title || 'Summary',
-            summary: result.summary
-          });
-          
-          setLoadingStage('complete');
-          
-          if (!summaryAddedToChat.current) {
-            setTimeout(() => {
-              summaryAddedToChat.current = true;
-              
-              
-              setMessages([]);
-              
-              append({
-                role: 'assistant',
-                content: `# ${result.title || 'Summary'}\n\n${result.summary}`
-              });
-              
-              setSummaryLoaded(true);
-            }, 500);
-          }
-        } else {
-          console.error("Failed to get summary:", result);
-          setSummaryRequested(false); // Allow retry
-        }
-      } catch (error) {
-        console.error("Error loading summary:", error);
-        setLoadingStage(null);
-        setSummaryRequested(false); // Allow retry
-      }
-    };
-    
-    loadSummary();
-  }, [pageId, append, summaryLoaded, summaryRequested, setMessages]);
+        setMessages([]);
+        
+        append({
+          role: 'assistant',
+          content: `# ${summaryData.title}\n\n${summaryData.summary}`
+        });
+      }, 500);
+    }
+  }, [summaryData, append, setMessages]);
 
   const handleMessageSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -130,7 +102,7 @@ export function SummaryChat({ pageId }: SummaryChatProps) {
     <div className="w-full">
       <h2 className="text-xl font-bold mb-4">Summary Analysis</h2>
       
-      {loadingStage && !summaryLoaded && (
+      {loadingStage && !summaryAddedToChat.current && (
         <div className="mb-6 border rounded-lg p-4 bg-gray-50 dark:bg-gray-800">
           <div className="space-y-4">
             <div className="flex items-center">
@@ -177,12 +149,26 @@ export function SummaryChat({ pageId }: SummaryChatProps) {
         </div>
       )}
       
+      {isError && (
+        <div className="mb-6 border rounded-lg p-4 bg-red-50 dark:bg-red-900/20">
+          <p className="text-red-600 dark:text-red-400">
+            Error loading summary: {error instanceof Error ? error.message : "Unknown error"}
+          </p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="mt-2 px-4 py-2 bg-red-100 dark:bg-red-800 rounded-md hover:bg-red-200 dark:hover:bg-red-700"
+          >
+            Try again
+          </button>
+        </div>
+      )}
+      
       <div 
         ref={messagesContainerRef}
         className="space-y-4 max-h-[500px] overflow-y-auto mb-4 p-4 border rounded-lg bg-gray-50 dark:bg-gray-800"
         style={{ scrollBehavior: 'smooth' }}
       >
-        {messages.length === 0 && !loadingStage && (
+        {messages.length === 0 && isLoading && !loadingStage && (
           <div className="text-center text-gray-500 py-8">
             Loading summary...
           </div>
@@ -214,7 +200,7 @@ export function SummaryChat({ pageId }: SummaryChatProps) {
         <div ref={messagesEndRef} />
       </div>
       
-      {summaryLoaded && (
+      {summaryAddedToChat.current && (
         <form 
           onSubmit={handleMessageSubmit}
           className="flex gap-2"
