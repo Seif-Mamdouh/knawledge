@@ -51,6 +51,7 @@ export function SummaryChat({ pageId }: SummaryChatProps) {
         summary: result.summary
       };
     },
+
   });
 
   const scrollToBottom = useCallback(() => {
@@ -184,7 +185,7 @@ export function SummaryChat({ pageId }: SummaryChatProps) {
             }`}
           >
             <div className="font-semibold mb-1">
-              {message.role === 'user' ? 'You' : 'AI Assistant'}
+              {message.role === 'user' ? 'You' : 'Knowledge Assistant'}
             </div>
             <div className="text-black dark:text-white text-lg">
               {message.role === 'assistant' && message.content.includes('# ') 
