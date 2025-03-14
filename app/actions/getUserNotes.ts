@@ -12,7 +12,6 @@ export async function getUserNotes(pageId: string) {
     }
     const userId = session.user.id
     
-    // Check if the user exists
     const user = await prisma.users.findUnique({
       where: {
         id: userId
@@ -26,7 +25,6 @@ export async function getUserNotes(pageId: string) {
       }
     }
     
-    // First, get the latest snapshot for this page
     const latestSnapshot = await prisma.pageSnapShots.findFirst({
       where: { page_id: pageId },
       orderBy: { fetched_at: 'desc' }
@@ -40,7 +38,6 @@ export async function getUserNotes(pageId: string) {
       }
     }
     
-    // Find the summary using the page snapshot ID
     const summary = await prisma.mdSummary.findFirst({
       where: { 
         note_summary_id: latestSnapshot.page_snapshot_id 
