@@ -10,9 +10,9 @@ export const fetchUserNotes = async (
 ) => {
   try {
     const notesResult = await getUserNotes(pageId)
-    if (notesResult.success && notesResult.notes) {
-      setNotes(notesResult.notes)
-      localStorage.setItem(`notes-${pageId}`, notesResult.notes)
+    if (notesResult.success && notesResult.content) {
+      setNotes(notesResult.content)
+      localStorage.setItem(`notes-${pageId}`, notesResult.content)
     }
   } catch (err) {
     console.error("Error fetching notes:", err)
