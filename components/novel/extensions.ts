@@ -22,6 +22,7 @@ import {
   Mathematics
 } from 'novel/extensions'
 import { UploadImagesPlugin } from 'novel/plugins'
+import Iframe from './extensions/iframe-extension'
 
 import { cx } from 'class-variance-authority'
 import { common, createLowlight } from 'lowlight'
@@ -151,6 +152,13 @@ const mathematics = Mathematics.configure({
 
 const characterCount = CharacterCount.configure()
 
+// Configure Iframe extension
+const iframe = Iframe.configure({
+  HTMLAttributes: {
+    class: cx('rounded-lg border border-muted my-4')
+  }
+})
+
 export const defaultExtensions = [
   starterKit,
   placeholder,
@@ -172,5 +180,6 @@ export const defaultExtensions = [
   TextStyle,
   Color,
   CustomKeymap,
-  GlobalDragHandle
+  GlobalDragHandle,
+  iframe
 ]

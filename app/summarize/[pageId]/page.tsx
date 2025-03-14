@@ -1,5 +1,5 @@
 "use client";
-import Editor from "@/components/novel/editor";
+import NotesEditor from "@/components/NotesEditor";
 import { SummaryChat } from "@/components/Chat/SummaryChat";
 import { useEditor } from "novel";
 
@@ -20,7 +20,7 @@ export default function SummarizePage({ params }: SummarizePageProps) {
           </div>
           <div className="w-full md:w-1/2 flex justify-center">
             <div className="w-full h-full">
-              <Editor initialValue={editor?.getJSON()} onChange={() => {}} />
+              <NotesEditor pageId={params.pageId} />
             </div>
           </div>
         </div>

@@ -10,7 +10,8 @@ import {
   Text,
   TextQuote,
   Twitter,
-  Youtube
+  Youtube,
+  MonitorPlay
 } from 'lucide-react'
 import { createSuggestionItems } from 'novel/extensions'
 import { Command, renderItems } from 'novel/extensions'
@@ -195,6 +196,28 @@ export const suggestionItems = createSuggestionItems([
         if (tweetLink !== null) {
           alert('Please enter a correct Twitter Link')
         }
+      }
+    }
+  },
+  {
+    title: 'Iframe',
+    description: 'Embed external content with an iframe.',
+    searchTerms: ['embed', 'iframe', 'external', 'website'],
+    icon: <MonitorPlay size={18} />,
+    command: ({ editor, range }) => {
+      const url = prompt('Enter the URL to embed:')
+      if (url) {
+        editor
+          .chain()
+          .focus()
+          .deleteRange(range)
+          .setIframe({
+            src: url,
+            width: '100%',
+            height: '400px',
+            title: 'Embedded content'
+          })
+          .run()
       }
     }
   }

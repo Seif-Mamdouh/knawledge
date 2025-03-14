@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 
 import {
   EditorCommand,
@@ -34,7 +34,10 @@ import { uploadFn } from '@/components/novel/image-upload'
 
 const hljs = require('highlight.js')
 
-const extensions = [...defaultExtensions, slashCommand]
+const extensions = [
+  ...defaultExtensions, 
+  slashCommand
+]
 
 export const defaultEditorContent = {
   type: 'doc',
@@ -56,6 +59,9 @@ export default function Editor({ initialValue, onChange }: EditorProps) {
   const [openColor, setOpenColor] = useState(false)
   const [openLink, setOpenLink] = useState(false)
   const [openAI, setOpenAI] = useState(false)
+  
+  // Use defaultEditorContent if initialValue is not provided
+  const editorContent = initialValue || defaultEditorContent
 
   //Apply Codeblock Highlighting on the HTML from editor.getHTML()
   const highlightCodeblocks = (content: string) => {
@@ -74,7 +80,7 @@ export default function Editor({ initialValue, onChange }: EditorProps) {
       <EditorRoot>
         <EditorContent
           immediatelyRender={false}
-          initialContent={initialValue}
+          initialContent={editorContent}
           extensions={extensions}
           className='min-h-[400px] h-full rounded-xl border p-4 bg-white dark:bg-gray-800'
           editorProps={{
