@@ -5,7 +5,7 @@ import Editor, { defaultEditorContent } from '@/components/novel/editor'
 import { saveNotesToDB } from '@/components/Chat/Summary/utils/saveNotesToDB'
 import { getUserNotes } from '@/app/actions/getUserNotes'
 import { Button } from '@/components/ui/button'
-import { Loader2, Save, CheckCircle, Image as ImageIcon, MonitorPlay } from 'lucide-react'
+import { Loader2, Save, CheckCircle, Image as ImageIcon, MonitorPlay, Share2 } from 'lucide-react'
 import { debounce } from 'lodash'
 import { generateJSON } from '@tiptap/html'
 import StarterKit from '@tiptap/starter-kit'
@@ -13,6 +13,7 @@ import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
 import Iframe from '@/components/novel/extensions/iframe-extension'
 import type { JSONContent } from 'novel'
+import { toast } from 'sonner'
 
 interface NotesEditorProps {
   pageId: string
@@ -132,6 +133,20 @@ export default function NotesEditor({ pageId, showMarkdownPreview = false }: Not
     input.click()
   }
 
+  const handleShare = () => {
+    const shareableContent = encodeURIComponent(content)
+    const shareUrl = `${window.location.origin}/shared-notes#${shareableContent}`
+    
+    navigator.clipboard.writeText(shareUrl)
+      .then(() => {
+        toast.success('Share link copied to clipboard!')
+      })
+      .catch(err => {
+        console.error('Failed to copy link:', err)
+        toast.error('Failed to copy link')
+      })
+  }
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
@@ -172,6 +187,15 @@ export default function NotesEditor({ pageId, showMarkdownPreview = false }: Not
         </div>
         
         <div className="flex gap-2">
+          <Button 
+            onClick={handleShare}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <Share2 className="h-4 w-4" />
+            Share
+          </Button>
+          
           <Button 
             onClick={handleManualSave}
             disabled={isSaving}
