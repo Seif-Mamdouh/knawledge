@@ -60,19 +60,7 @@ export default function Editor({ initialValue, onChange }: EditorProps) {
   const [openLink, setOpenLink] = useState(false)
   const [openAI, setOpenAI] = useState(false)
   
-  // Use defaultEditorContent if initialValue is not provided
   const editorContent = initialValue || defaultEditorContent
-
-  //Apply Codeblock Highlighting on the HTML from editor.getHTML()
-  const highlightCodeblocks = (content: string) => {
-    const doc = new DOMParser().parseFromString(content, 'text/html')
-    doc.querySelectorAll('pre code').forEach(el => {
-      // @ts-ignore
-      // https://highlightjs.readthedocs.io/en/latest/api.html?highlight=highlightElement#highlightelement
-      hljs.highlightElement(el)
-    })
-    return new XMLSerializer().serializeToString(doc)
-  }
 
   return (
     <div className='relative w-full h-full'>
@@ -82,7 +70,8 @@ export default function Editor({ initialValue, onChange }: EditorProps) {
           immediatelyRender={false}
           initialContent={editorContent}
           extensions={extensions}
-          className='min-h-[400px] h-full rounded-xl border p-4 bg-white dark:bg-gray-800'
+          className='min-h-[500px] overflow-y-auto mb-4 p-4 border rounded-lg bg-white dark:bg-gray-800'
+          
           editorProps={{
             handleDOMEvents: {
               keydown: (_view, event) => handleCommandNavigation(event)

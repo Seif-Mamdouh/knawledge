@@ -105,32 +105,10 @@ export default function NotesEditor({ pageId, showMarkdownPreview = false }: Not
     debouncedSave(newContent)
   }
 
-  // Manual save button handler
   const handleManualSave = async () => {
     await saveNotesToDB(pageId, content, { setIsSaving, setSaveError })
     setSaveSuccess(true)
     setTimeout(() => setSaveSuccess(false), 2000)
-  }
-
-  // Helper functions for inserting media
-  const handleImageUpload = () => {
-    const input = document.createElement('input')
-    input.type = 'file'
-    input.accept = 'image/*'
-    input.onchange = async () => {
-      if (input.files?.length) {
-        const file = input.files[0]
-        const reader = new FileReader()
-        reader.onload = (e) => {
-          const dataUrl = e.target?.result as string
-          
-          console.log("Image uploaded:", dataUrl)
-          
-        }
-        reader.readAsDataURL(file)
-      }
-    }
-    input.click()
   }
 
   const handleShare = () => {
