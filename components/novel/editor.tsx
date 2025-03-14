@@ -52,37 +52,28 @@ export const defaultEditorContent = {
 interface EditorProps {
   initialValue?: JSONContent
   onChange: (content: string) => void
+  editable?: boolean
+  showTitle?: boolean
 }
 
-export default function Editor({ initialValue, onChange }: EditorProps) {
+export default function Editor({ initialValue, onChange, editable = true, showTitle = true }: EditorProps) {
   const [openNode, setOpenNode] = useState(false)
   const [openColor, setOpenColor] = useState(false)
   const [openLink, setOpenLink] = useState(false)
   const [openAI, setOpenAI] = useState(false)
   
-  // Use defaultEditorContent if initialValue is not provided
   const editorContent = initialValue || defaultEditorContent
-
-  //Apply Codeblock Highlighting on the HTML from editor.getHTML()
-  const highlightCodeblocks = (content: string) => {
-    const doc = new DOMParser().parseFromString(content, 'text/html')
-    doc.querySelectorAll('pre code').forEach(el => {
-      // @ts-ignore
-      // https://highlightjs.readthedocs.io/en/latest/api.html?highlight=highlightElement#highlightelement
-      hljs.highlightElement(el)
-    })
-    return new XMLSerializer().serializeToString(doc)
-  }
 
   return (
     <div className='relative w-full h-full'>
-      <div className="text-xl font-bold mb-4 text-left">📝 Take notes here</div>
+      {showTitle && <div className="text-xl font-bold mb-4 text-left">📝 Take notes here</div>}
       <EditorRoot>
         <EditorContent
           immediatelyRender={false}
           initialContent={editorContent}
           extensions={extensions}
-          className='min-h-[400px] h-full rounded-xl border p-4 bg-white dark:bg-gray-800'
+          className='min-h-[500px] overflow-y-auto mb-4 p-4 border rounded-lg bg-white dark:bg-gray-800'
+          
           editorProps={{
             handleDOMEvents: {
               keydown: (_view, event) => handleCommandNavigation(event)
@@ -94,7 +85,8 @@ export default function Editor({ initialValue, onChange }: EditorProps) {
             attributes: {
               class:
                 'prose dark:prose-invert prose-headings:font-title font-default focus:outline-none max-w-full'
-            }
+            },
+            editable: () => editable,
           }}
           onUpdate={({ editor }) => {
             onChange(editor.getHTML())

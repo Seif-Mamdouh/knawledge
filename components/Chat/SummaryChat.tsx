@@ -4,14 +4,17 @@ import { useChat } from '@ai-sdk/react';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { renderSummaryContent, renderMessageContent } from '@/components/Chat/Summary/utils';
 import { getSummary } from '@/app/actions/getSummary';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Lock } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
 
 interface SummaryChatProps {
   pageId: string;
 }
 
 export function SummaryChat({ pageId }: SummaryChatProps) {
+  const { data: session } = useSession();
+  const isAuthenticated = !!session?.user;
   const [loadingStage, setLoadingStage] = useState<'fetching' | 'processing' | 'formatting' | 'complete' | null>(null);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -102,6 +105,13 @@ export function SummaryChat({ pageId }: SummaryChatProps) {
   return (
     <div className="w-full">
       <h2 className="text-xl font-bold mb-4">Summary Analysis</h2>
+      
+      {!isAuthenticated && (
+        <div className="bg-yellow-50 border border-yellow-400 text-yellow-700 px-4 py-3 rounded flex items-center mb-4">
+          <Lock className="h-4 w-4 mr-2" />
+          <p>You are viewing this summary in read-only mode</p>
+        </div>
+      )}
       
       {loadingStage && !summaryAddedToChat.current && (
         <div className="mb-6 border rounded-lg p-4 bg-gray-50 dark:bg-gray-800">
@@ -201,7 +211,7 @@ export function SummaryChat({ pageId }: SummaryChatProps) {
         <div ref={messagesEndRef} />
       </div>
       
-      {summaryAddedToChat.current && (
+      {summaryAddedToChat.current && isAuthenticated && (
         <form 
           onSubmit={handleMessageSubmit}
           className="flex gap-2"
@@ -220,6 +230,12 @@ export function SummaryChat({ pageId }: SummaryChatProps) {
             Send
           </button>
         </form>
+      )}
+      
+      {summaryAddedToChat.current && !isAuthenticated && (
+        <div className="mt-4 p-4 border rounded-lg bg-gray-50 dark:bg-gray-800 text-center">
+          <p>Sign in to ask questions about this content</p>
+        </div>
       )}
     </div>
   );
