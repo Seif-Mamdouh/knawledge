@@ -34,8 +34,9 @@ export async function getUserNotes(pageId: string) {
     
     if (!latestSnapshot) {
       return { 
-        success: true, 
-        notes: 'Start taking notes here...' 
+        success: false, 
+        error: `No snapshot found for page ${pageId}`,
+        content: null
       }
     }
     
@@ -49,34 +50,40 @@ export async function getUserNotes(pageId: string) {
     
     if (!summary) {
       return { 
-        success: true, 
-        notes: 'Start taking notes here...' 
+        success: false, 
+        error: `No summary found for page ${pageId}`,
+        content: null
       }
     }
     
     const summaryId = summary.note_id;
     
-    const userNotes = await prisma.userNotes.findUnique({
+    const userNote = await prisma.userNotes.findUnique({
       where: {
         userId_pageId: {
           userId,
           pageId: summaryId
         }
-      },
-      select: {
-        content: true
       }
-    })
+    });
+    
+    if (!userNote) {
+      return { 
+        success: true, 
+        content: null 
+      }
+    }
     
     return { 
       success: true, 
-      notes: userNotes?.content || 'Start taking notes here...'
+      content: userNote.content 
     }
   } catch (error) {
-    console.error("Failed to fetch notes:", error)
+    console.error("Failed to get user notes:", error)
     return { 
       success: false, 
-      error: `Failed to fetch notes: ${error instanceof Error ? error.message : String(error)}` 
+      error: `Failed to get notes: ${error instanceof Error ? error.message : String(error)}`,
+      content: null
     }
   }
 } 
