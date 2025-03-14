@@ -74,7 +74,9 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@types/lodash": "^4.17.16",
     "@types/turndown": "^5.0.5",
+    "lodash": "^4.17.21",
     "prisma": "^6.4.1"
   }
 }
