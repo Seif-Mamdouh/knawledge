@@ -54,7 +54,6 @@ export default function NotesEditor({ pageId, showMarkdownPreview = false }: Not
             setInitialContent(json as JSONContent)
           } catch (err) {
             console.error("Error converting HTML to JSON:", err)
-            // Fallback to default content if conversion fails
           }
         } else if (!result.success && result.error) {
           setLoadError(result.error)
