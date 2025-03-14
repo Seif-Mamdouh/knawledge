@@ -52,9 +52,11 @@ export const defaultEditorContent = {
 interface EditorProps {
   initialValue?: JSONContent
   onChange: (content: string) => void
+  editable?: boolean
+  showTitle?: boolean
 }
 
-export default function Editor({ initialValue, onChange }: EditorProps) {
+export default function Editor({ initialValue, onChange, editable = true, showTitle = true }: EditorProps) {
   const [openNode, setOpenNode] = useState(false)
   const [openColor, setOpenColor] = useState(false)
   const [openLink, setOpenLink] = useState(false)
@@ -64,7 +66,7 @@ export default function Editor({ initialValue, onChange }: EditorProps) {
 
   return (
     <div className='relative w-full h-full'>
-      <div className="text-xl font-bold mb-4 text-left">📝 Take notes here</div>
+      {showTitle && <div className="text-xl font-bold mb-4 text-left">📝 Take notes here</div>}
       <EditorRoot>
         <EditorContent
           immediatelyRender={false}
@@ -83,7 +85,8 @@ export default function Editor({ initialValue, onChange }: EditorProps) {
             attributes: {
               class:
                 'prose dark:prose-invert prose-headings:font-title font-default focus:outline-none max-w-full'
-            }
+            },
+            editable: () => editable,
           }}
           onUpdate={({ editor }) => {
             onChange(editor.getHTML())

@@ -5,7 +5,7 @@ import Editor, { defaultEditorContent } from '@/components/novel/editor'
 import { saveNotesToDB } from '@/components/Chat/Summary/utils/saveNotesToDB'
 import { getUserNotes } from '@/app/actions/getUserNotes'
 import { Button } from '@/components/ui/button'
-import { Loader2, Save, CheckCircle, Image as ImageIcon, MonitorPlay, Share2 } from 'lucide-react'
+import { Loader2, Save, CheckCircle, Image as ImageIcon, MonitorPlay, Share2, Lock } from 'lucide-react'
 import { debounce } from 'lodash'
 import { generateJSON } from '@tiptap/html'
 import StarterKit from '@tiptap/starter-kit'
@@ -14,6 +14,7 @@ import Link from '@tiptap/extension-link'
 import Iframe from '@/components/novel/extensions/iframe-extension'
 import type { JSONContent } from 'novel'
 import { toast } from 'sonner'
+import { useSession } from 'next-auth/react'
 
 interface NotesEditorProps {
   pageId: string
@@ -21,6 +22,7 @@ interface NotesEditorProps {
 }
 
 export default function NotesEditor({ pageId, showMarkdownPreview = false }: NotesEditorProps) {
+  const { data: session } = useSession()
   const [content, setContent] = useState<string>('')
   const [isSaving, setIsSaving] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
@@ -28,33 +30,37 @@ export default function NotesEditor({ pageId, showMarkdownPreview = false }: Not
   const [loadError, setLoadError] = useState<string | null>(null)
   const [saveSuccess, setSaveSuccess] = useState(false)
   const [initialContent, setInitialContent] = useState<JSONContent>(defaultEditorContent)
-
+  const [isOwner, setIsOwner] = useState(false)
 
   useEffect(() => {
     const loadUserNotes = async () => {
       setIsLoading(true)
       try {
         const result = await getUserNotes(pageId)
-        if (result.success && result.content) {
-          setContent(result.content)
+        if (result.success) {
+          setIsOwner(result.isOwner || false)
           
-          try {
-            const processedHtml = processHtmlForImages(result.content)
+          if (result.content) {
+            setContent(result.content)
             
-            const json = generateJSON(processedHtml, [
-              StarterKit,
-              Image.configure({
-                inline: true,
-                allowBase64: true,
-              }),
-              Link.configure({
-                openOnClick: false,
-              }),
-              Iframe
-            ])
-            setInitialContent(json as JSONContent)
-          } catch (err) {
-            console.error("Error converting HTML to JSON:", err)
+            try {
+              const processedHtml = processHtmlForImages(result.content)
+              
+              const json = generateJSON(processedHtml, [
+                StarterKit,
+                Image.configure({
+                  inline: true,
+                  allowBase64: true,
+                }),
+                Link.configure({
+                  openOnClick: false,
+                }),
+                Iframe
+              ])
+              setInitialContent(json as JSONContent)
+            } catch (err) {
+              console.error("Error converting HTML to JSON:", err)
+            }
           }
         } else if (!result.success && result.error) {
           setLoadError(result.error)
@@ -101,21 +107,24 @@ export default function NotesEditor({ pageId, showMarkdownPreview = false }: Not
 
   // Handle content changes
   const handleContentChange = (newContent: string) => {
+    if (!isOwner) return // Prevent saving for non-owners
+    
     setContent(newContent)
     debouncedSave(newContent)
   }
 
   const handleManualSave = async () => {
+    if (!isOwner) return // Prevent saving for non-owners
+    
     await saveNotesToDB(pageId, content, { setIsSaving, setSaveError })
     setSaveSuccess(true)
     setTimeout(() => setSaveSuccess(false), 2000)
   }
 
   const handleShare = () => {
-    const shareableContent = encodeURIComponent(content)
-    const shareUrl = `${window.location.origin}/shared-notes#${shareableContent}`
+    const shareableUrl = `${window.location.origin}/summarize/${pageId}`
     
-    navigator.clipboard.writeText(shareUrl)
+    navigator.clipboard.writeText(shareableUrl)
       .then(() => {
         toast.success('Share link copied to clipboard!')
       })
@@ -129,7 +138,7 @@ export default function NotesEditor({ pageId, showMarkdownPreview = false }: Not
     return (
       <div className="flex justify-center items-center min-h-[400px]">
         <Loader2 className="h-8 w-8 animate-spin" />
-        <span className="ml-2">Loading your notes...</span>
+        <span className="ml-2">Loading notes...</span>
       </div>
     )
   }
@@ -142,9 +151,21 @@ export default function NotesEditor({ pageId, showMarkdownPreview = false }: Not
         </div>
       )}
       
+      {!isOwner && (
+        <>
+          <div className="text-xl font-bold mb-2 text-left">📝 Viewing as a guest</div>
+          <div className="bg-yellow-50 border border-yellow-400 text-yellow-700 px-4 py-3 rounded flex items-center">
+            <Lock className="h-4 w-4 mr-2" />
+            <p>You are viewing this note in read-only mode</p>
+          </div>
+        </>
+      )}
+      
       <Editor 
         initialValue={initialContent} 
-        onChange={handleContentChange} 
+        onChange={handleContentChange}
+        editable={isOwner}
+        showTitle={isOwner}
       />
       
       {showMarkdownPreview && (
@@ -174,28 +195,30 @@ export default function NotesEditor({ pageId, showMarkdownPreview = false }: Not
             Share
           </Button>
           
-          <Button 
-            onClick={handleManualSave}
-            disabled={isSaving}
-            className="flex items-center gap-2"
-          >
-            {isSaving ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Saving...
-              </>
-            ) : saveSuccess ? (
-              <>
-                <CheckCircle className="h-4 w-4 text-green-500" />
-                Saved
-              </>
-            ) : (
-              <>
-                <Save className="h-4 w-4" />
-                Save
-              </>
-            )}
-          </Button>
+          {isOwner && (
+            <Button 
+              onClick={handleManualSave}
+              disabled={isSaving}
+              className="flex items-center gap-2"
+            >
+              {isSaving ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : saveSuccess ? (
+                <>
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  Saved
+                </>
+              ) : (
+                <>
+                  <Save className="h-4 w-4" />
+                  Save
+                </>
+              )}
+            </Button>
+          )}
         </div>
       </div>
     </div>

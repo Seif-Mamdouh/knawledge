@@ -7,24 +7,9 @@ import { getServerSession } from 'next-auth'
 export async function getUserNotes(pageId: string) {
   try {
     const session = await getServerSession(authOptions)
-    if (!session?.user?.id) {
-      throw new Error('Unauthorized')
-    }
-    const userId = session.user.id
+    const userId = session?.user?.id
     
-    const user = await prisma.users.findUnique({
-      where: {
-        id: userId
-      }
-    })
-    
-    if (!user) {
-      return { 
-        success: false, 
-        error: `Cannot get notes: User with ID ${userId} not found` 
-      }
-    }
-    
+    // Get the latest snapshot regardless of user authentication
     const latestSnapshot = await prisma.pageSnapShots.findFirst({
       where: { page_id: pageId },
       orderBy: { fetched_at: 'desc' }
@@ -55,32 +40,59 @@ export async function getUserNotes(pageId: string) {
     
     const summaryId = summary.note_id;
     
-    const userNote = await prisma.userNotes.findUnique({
-      where: {
-        userId_pageId: {
-          userId,
-          pageId: summaryId
+    // If user is authenticated, get their personal notes
+    if (userId) {
+      const user = await prisma.users.findUnique({
+        where: { id: userId }
+      })
+      
+      if (!user) {
+        return { 
+          success: false, 
+          error: `Cannot get notes: User with ID ${userId} not found` 
         }
       }
-    });
-    
-    if (!userNote) {
-      return { 
-        success: true, 
-        content: null 
+      
+      const userNote = await prisma.userNotes.findUnique({
+        where: {
+          userId_pageId: {
+            userId,
+            pageId: summaryId
+          }
+        }
+      });
+      
+      if (userNote) {
+        return { 
+          success: true, 
+          content: userNote.content,
+          isOwner: true
+        }
       }
     }
     
+    // For anonymous users or if authenticated user has no notes,
+    // return the default content or empty content
+    
+    // Find any user's notes for this page to share with anonymous users
+    const anyUserNote = await prisma.userNotes.findFirst({
+      where: {
+        pageId: summaryId
+      }
+    });
+    
     return { 
       success: true, 
-      content: userNote.content 
+      content: anyUserNote?.content || '<div><p>No content has been added to this note yet.</p></div>',
+      isOwner: false
     }
   } catch (error) {
     console.error("Failed to get user notes:", error)
     return { 
       success: false, 
       error: `Failed to get notes: ${error instanceof Error ? error.message : String(error)}`,
-      content: null
+      content: '<div><p>Error loading content.</p></div>',
+      isOwner: false
     }
   }
 } 
