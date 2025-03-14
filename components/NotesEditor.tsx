@@ -39,9 +39,15 @@ export default function NotesEditor({ pageId, showMarkdownPreview = false }: Not
           
           // Convert HTML to Novel's JSON content format using TipTap's utilities
           try {
-            const json = generateJSON(result.content, [
+            // Process the HTML to ensure image tags are properly formatted
+            const processedHtml = processHtmlForImages(result.content)
+            
+            const json = generateJSON(processedHtml, [
               StarterKit,
-              Image,
+              Image.configure({
+                inline: true,
+                allowBase64: true,
+              }),
               Link.configure({
                 openOnClick: false,
               }),
@@ -65,6 +71,36 @@ export default function NotesEditor({ pageId, showMarkdownPreview = false }: Not
 
     loadUserNotes()
   }, [pageId])
+
+  // Helper function to process HTML and ensure images are properly formatted
+  const processHtmlForImages = (html: string): string => {
+    // Create a DOM parser to manipulate the HTML
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    
+    // Find all image elements
+    const images = doc.querySelectorAll('img');
+    
+    // Process each image to ensure it has the necessary attributes
+    images.forEach(img => {
+      // Make sure images have alt text
+      if (!img.alt) img.alt = 'Image';
+      
+      // Ensure the image has proper styling classes if needed
+      img.classList.add('novel-image');
+      
+      // If using data URLs, make sure they're properly formatted
+      if (img.src.startsWith('data:')) {
+        // The src is already a data URL, no need to modify
+      } else if (img.src.startsWith('/')) {
+        // For relative URLs, make sure they point to the correct location
+        // This depends on your application's structure
+      }
+    });
+    
+    // Convert back to string
+    return new XMLSerializer().serializeToString(doc);
+  };
 
   // Debounced save function
   const debouncedSave = useCallback(
