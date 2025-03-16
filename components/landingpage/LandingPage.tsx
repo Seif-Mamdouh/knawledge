@@ -134,7 +134,6 @@ export default function LandingPage() {
           <div className="flex flex-col items-center text-center">
             <div className="bg-purple-900/30 w-16 h-16 rounded-full flex items-center justify-center mb-6 relative">
               <span className="text-2xl font-bold">1</span>
-              <div className="absolute -right-1/2 top-1/2 h-0.5 w-full bg-gradient-to-r from-purple-500 to-transparent hidden md:block"></div>
             </div>
             <h3 className="text-xl font-bold mb-3">Upload Content</h3>
             <p className="text-gray-300">Import articles, documents, and web pages into your knowledge base.</p>
@@ -144,7 +143,6 @@ export default function LandingPage() {
           <div className="flex flex-col items-center text-center">
             <div className="bg-purple-900/30 w-16 h-16 rounded-full flex items-center justify-center mb-6 relative">
               <span className="text-2xl font-bold">2</span>
-              <div className="absolute -right-1/2 top-1/2 h-0.5 w-full bg-gradient-to-r from-purple-500 to-transparent hidden md:block"></div>
             </div>
             <h3 className="text-xl font-bold mb-3">Organize & Summarize</h3>
             <p className="text-gray-300">
