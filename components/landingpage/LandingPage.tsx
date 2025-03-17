@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { ArrowRight, BookOpen, MessageSquare, FileText, Sparkles, Brain } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link"
 
 export default function LandingPage() {
   return (
@@ -19,7 +20,9 @@ export default function LandingPage() {
             How It Works
           </a>
         </nav>
-        <Button className="bg-purple-600 hover:bg-purple-700">Get Started</Button>
+        <Link href="/summarize">
+          <Button className="bg-purple-600 hover:bg-purple-700">Get Started</Button>
+        </Link>
       </header>
 
       {/* Hero Section */}
@@ -40,7 +43,9 @@ export default function LandingPage() {
           editor.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button className="bg-purple-600 hover:bg-purple-700 text-lg px-8 py-6">Try Knowledge Free</Button>
+          <Link href="/summarize">
+            <Button className="bg-purple-600 hover:bg-purple-700 text-lg px-8 py-6">Try Knowledge Free</Button>
+          </Link>
         </div>
       </section>
 
@@ -217,13 +222,14 @@ export default function LandingPage() {
           <p className="text-xl text-gray-300 mb-10 max-w-3xl mx-auto">
             Join thousands of professionals who use Knowledge to organize, summarize, and interact with their content.
           </p>
-          <Button className="bg-purple-600 hover:bg-purple-700 text-lg px-8 py-6">Get Started for Free</Button>
+          <Link href="/summarize">
+            <Button className="bg-purple-600 hover:bg-purple-700 text-lg px-8 py-6">Get Started for Free</Button>
+          </Link>
           <p className="text-gray-400 mt-4">No credit card required</p>
         </div>
       </section>
 
       {/* Footer */}
-      
       <footer className="bg-black py-12">
         <div className="container mx-auto px-4">
           <div className="flex flex-row justify-between items-center">
