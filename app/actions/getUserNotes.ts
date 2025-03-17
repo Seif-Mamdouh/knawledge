@@ -62,12 +62,10 @@ export async function getUserNotes(pageId: string) {
         }
       });
       
-      if (userNote) {
-        return { 
-          success: true, 
-          content: userNote.content,
-          isOwner: true
-        }
+      return { 
+        success: true, 
+        content: userNote?.content || '<div><p>No content has been added to this note yet.</p></div>',
+        isOwner: true
       }
     }
     
