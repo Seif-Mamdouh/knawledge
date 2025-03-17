@@ -122,6 +122,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      encoding:
+        specifier: ^0.1.13
+        version: 0.1.13
       eslint:
         specifier: 8.51.0
         version: 8.51.0
@@ -154,7 +157,7 @@ importers:
         version: 0.5.0(@tiptap/extension-code-block@2.11.5(@tiptap/core@2.11.5(@tiptap/pm@2.11.5))(@tiptap/pm@2.11.5))(@types/react@18.2.25)(highlight.js@11.11.1)(lowlight@3.3.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       openai:
         specifier: ^4.86.2
-        version: 4.86.2(zod@3.24.2)
+        version: 4.86.2(encoding@0.1.13)(zod@3.24.2)
       openai-edge:
         specifier: ^1.2.2
         version: 1.2.2
@@ -193,7 +196,7 @@ importers:
         version: 5.2.2
       vercel:
         specifier: ^41.4.1
-        version: 41.4.1
+        version: 41.4.1(encoding@0.1.13)
       zod:
         specifier: ^3.24.2
         version: 3.24.2
@@ -2431,6 +2434,9 @@ packages:
   emoji-regex@9.2.2:
     resolution: {integrity: sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==}
 
+  encoding@0.1.13:
+    resolution: {integrity: sha512-ETBauow1T35Y/WZMkio9jiM0Z5xjHHmJ4XmjZOq1l/dXz3lr2sRn87nJy20RupqSh1F2m3HHPSp8ShIPQJrJ3A==}
+
   end-of-stream@1.1.0:
     resolution: {integrity: sha512-EoulkdKF/1xa92q25PbjuDcgJ9RDHYU2Rs3SCIvs2/dSQ3BpmxneNHmA/M7fe60M3PrV7nNGTTNbkK62l6vXiQ==}
 
@@ -3038,6 +3044,10 @@ packages:
 
   iconv-lite@0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
+    engines: {node: '>=0.10.0'}
+
+  iconv-lite@0.6.3:
+    resolution: {integrity: sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==}
     engines: {node: '>=0.10.0'}
 
   ieee754@1.2.1:
@@ -5734,12 +5744,12 @@ snapshots:
       '@lezer/highlight': 1.2.1
       '@lezer/lr': 1.4.2
 
-  '@mapbox/node-pre-gyp@2.0.0':
+  '@mapbox/node-pre-gyp@2.0.0(encoding@0.1.13)':
     dependencies:
       consola: 3.4.0
       detect-libc: 2.0.3
       https-proxy-agent: 7.0.6
-      node-fetch: 2.7.0
+      node-fetch: 2.7.0(encoding@0.1.13)
       nopt: 8.1.0
       semver: 7.7.1
       tar: 7.4.3
@@ -6900,7 +6910,7 @@ snapshots:
 
   '@vercel/error-utils@2.0.3': {}
 
-  '@vercel/fun@1.1.5':
+  '@vercel/fun@1.1.5(encoding@0.1.13)':
     dependencies:
       '@tootallnate/once': 2.0.0
       async-listen: 1.2.0
@@ -6908,7 +6918,7 @@ snapshots:
       generic-pool: 3.4.2
       micro: 9.3.5-canary.3
       ms: 2.1.1
-      node-fetch: 2.6.7
+      node-fetch: 2.6.7(encoding@0.1.13)
       path-match: 1.2.4
       promisepipe: 3.0.0
       semver: 7.5.4
@@ -6944,17 +6954,17 @@ snapshots:
       '@vercel/static-config': 3.0.0
       ts-morph: 12.0.0
 
-  '@vercel/next@4.7.4':
+  '@vercel/next@4.7.4(encoding@0.1.13)':
     dependencies:
-      '@vercel/nft': 0.27.10
+      '@vercel/nft': 0.27.10(encoding@0.1.13)
     transitivePeerDependencies:
       - encoding
       - rollup
       - supports-color
 
-  '@vercel/nft@0.27.10':
+  '@vercel/nft@0.27.10(encoding@0.1.13)':
     dependencies:
-      '@mapbox/node-pre-gyp': 2.0.0
+      '@mapbox/node-pre-gyp': 2.0.0(encoding@0.1.13)
       '@rollup/pluginutils': 5.1.4
       acorn: 8.14.1
       acorn-import-attributes: 1.9.5(acorn@8.14.1)
@@ -6971,7 +6981,7 @@ snapshots:
       - rollup
       - supports-color
 
-  '@vercel/node@5.1.14':
+  '@vercel/node@5.1.14(encoding@0.1.13)':
     dependencies:
       '@edge-runtime/node-utils': 2.3.0
       '@edge-runtime/primitives': 4.1.0
@@ -6979,7 +6989,7 @@ snapshots:
       '@types/node': 16.18.11
       '@vercel/build-utils': 10.5.1
       '@vercel/error-utils': 2.0.3
-      '@vercel/nft': 0.27.10
+      '@vercel/nft': 0.27.10(encoding@0.1.13)
       '@vercel/static-config': 3.0.0
       async-listen: 3.0.0
       cjs-module-lexer: 1.2.3
@@ -6987,7 +6997,7 @@ snapshots:
       es-module-lexer: 1.4.1
       esbuild: 0.14.47
       etag: 1.8.1
-      node-fetch: 2.6.9
+      node-fetch: 2.6.9(encoding@0.1.13)
       path-to-regexp: 6.1.0
       path-to-regexp-updated: path-to-regexp@6.3.0
       ts-morph: 12.0.0
@@ -7003,9 +7013,9 @@ snapshots:
 
   '@vercel/python@4.7.1': {}
 
-  '@vercel/redwood@2.3.0':
+  '@vercel/redwood@2.3.0(encoding@0.1.13)':
     dependencies:
-      '@vercel/nft': 0.27.10
+      '@vercel/nft': 0.27.10(encoding@0.1.13)
       '@vercel/static-config': 3.0.0
       semver: 6.3.1
       ts-morph: 12.0.0
@@ -7014,10 +7024,10 @@ snapshots:
       - rollup
       - supports-color
 
-  '@vercel/remix-builder@5.4.3':
+  '@vercel/remix-builder@5.4.3(encoding@0.1.13)':
     dependencies:
       '@vercel/error-utils': 2.0.3
-      '@vercel/nft': 0.27.10
+      '@vercel/nft': 0.27.10(encoding@0.1.13)
       '@vercel/static-config': 3.0.0
       path-to-regexp: 6.1.0
       path-to-regexp-updated: path-to-regexp@6.3.0
@@ -7566,6 +7576,10 @@ snapshots:
   emoji-regex@8.0.0: {}
 
   emoji-regex@9.2.2: {}
+
+  encoding@0.1.13:
+    dependencies:
+      iconv-lite: 0.6.3
 
   end-of-stream@1.1.0:
     dependencies:
@@ -8328,6 +8342,10 @@ snapshots:
       ms: 2.1.3
 
   iconv-lite@0.4.24:
+    dependencies:
+      safer-buffer: 2.1.2
+
+  iconv-lite@0.6.3:
     dependencies:
       safer-buffer: 2.1.2
 
@@ -9356,17 +9374,23 @@ snapshots:
 
   node-domexception@1.0.0: {}
 
-  node-fetch@2.6.7:
+  node-fetch@2.6.7(encoding@0.1.13):
     dependencies:
       whatwg-url: 5.0.0
+    optionalDependencies:
+      encoding: 0.1.13
 
-  node-fetch@2.6.9:
+  node-fetch@2.6.9(encoding@0.1.13):
     dependencies:
       whatwg-url: 5.0.0
+    optionalDependencies:
+      encoding: 0.1.13
 
-  node-fetch@2.7.0:
+  node-fetch@2.7.0(encoding@0.1.13):
     dependencies:
       whatwg-url: 5.0.0
+    optionalDependencies:
+      encoding: 0.1.13
 
   node-gyp-build@4.8.4: {}
 
@@ -9481,7 +9505,7 @@ snapshots:
 
   openai-edge@1.2.2: {}
 
-  openai@4.86.2(zod@3.24.2):
+  openai@4.86.2(encoding@0.1.13)(zod@3.24.2):
     dependencies:
       '@types/node': 18.19.80
       '@types/node-fetch': 2.6.12
@@ -9489,7 +9513,7 @@ snapshots:
       agentkeepalive: 4.6.0
       form-data-encoder: 1.7.2
       formdata-node: 4.4.1
-      node-fetch: 2.7.0
+      node-fetch: 2.7.0(encoding@0.1.13)
     optionalDependencies:
       zod: 3.24.2
     transitivePeerDependencies:
@@ -10620,17 +10644,17 @@ snapshots:
 
   v8-compile-cache-lib@3.0.1: {}
 
-  vercel@41.4.1:
+  vercel@41.4.1(encoding@0.1.13):
     dependencies:
       '@vercel/build-utils': 10.5.1
-      '@vercel/fun': 1.1.5
+      '@vercel/fun': 1.1.5(encoding@0.1.13)
       '@vercel/go': 3.2.1
       '@vercel/hydrogen': 1.2.0
-      '@vercel/next': 4.7.4
-      '@vercel/node': 5.1.14
+      '@vercel/next': 4.7.4(encoding@0.1.13)
+      '@vercel/node': 5.1.14(encoding@0.1.13)
       '@vercel/python': 4.7.1
-      '@vercel/redwood': 2.3.0
-      '@vercel/remix-builder': 5.4.3
+      '@vercel/redwood': 2.3.0(encoding@0.1.13)
+      '@vercel/remix-builder': 5.4.3(encoding@0.1.13)
       '@vercel/ruby': 2.2.0
       '@vercel/static-build': 2.7.6
       chokidar: 4.0.0
