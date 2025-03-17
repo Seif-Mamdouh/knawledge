@@ -223,6 +223,7 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
+      
       <footer className="bg-black py-12">
         <div className="container mx-auto px-4">
           <div className="flex flex-row justify-between items-center">
