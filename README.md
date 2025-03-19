@@ -15,7 +15,7 @@ This project is an AI-powered tool designed to analyze and summarize knowledge c
 
 ## Technology Stack
 - Frontend: React.js with modern UI components
-- Backend: NLP libraries
+- Backend: NLP libraries && Prisma DB
 - AI Models: Transformer-based language models for text analysis
 
 ## 📜 License
