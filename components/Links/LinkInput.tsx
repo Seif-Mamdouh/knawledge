@@ -13,9 +13,10 @@ import { Search, Link, ArrowRight } from "lucide-react"
 interface LinkInputProps {
   pageId: string
   onAddLink?: (url: string, pageId: string) => void
+  initialUrl?: string
 }
 
-export function LinkInput({ pageId, onAddLink }: LinkInputProps) {
+export function LinkInput({ pageId, onAddLink, initialUrl }: LinkInputProps) {
   const [url, setUrl] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [isValidUrl, setIsValidUrl] = useState(true)
@@ -37,7 +38,13 @@ export function LinkInput({ pageId, onAddLink }: LinkInputProps) {
     }
   }, [url])
 
-  const handleSubmit = async () => {
+  useEffect(() => {
+    if (initialUrl && !isLoading) {
+      handleSubmit(initialUrl)
+    }
+  }, [initialUrl])
+
+  const handleSubmit = async (url: string) => {
     if (!url || !isValidUrl) return
 
     try {
@@ -66,7 +73,7 @@ export function LinkInput({ pageId, onAddLink }: LinkInputProps) {
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      handleSubmit()
+      handleSubmit(url)
     }
   }
 
@@ -156,7 +163,7 @@ export function LinkInput({ pageId, onAddLink }: LinkInputProps) {
 
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
             <Button
-              onClick={handleSubmit}
+              onClick={() => handleSubmit(url)}
               disabled={!url || !isValidUrl || isLoading}
               className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 transition-all duration-200 flex items-center justify-center group rounded-lg"
             >
