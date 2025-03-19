@@ -107,7 +107,7 @@ export default function NotesEditor({ pageId, showMarkdownPreview = false }: Not
 
   // Handle content changes
   const handleContentChange = (newContent: string) => {
-    if (!isOwner) return // Prevent saving for non-owners
+    if (!isOwner) return
     
     setContent(newContent)
     debouncedSave(newContent)

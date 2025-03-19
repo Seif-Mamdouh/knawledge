@@ -2,10 +2,15 @@
 
 import prisma from '@/lib/prisma'
 import OpenAI from 'openai'
+import { maxDuration } from '../config/serverConfig'
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
+
+export async function getMaxDuration() {
+  return maxDuration;
+}
 
 export async function summarizeContent(pageSnapshotId: string) {
   try {
