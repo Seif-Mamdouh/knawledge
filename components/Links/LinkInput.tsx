@@ -41,6 +41,7 @@ export function LinkInput({ pageId, onAddLink, initialUrl }: LinkInputProps) {
   useEffect(() => {
     if (initialUrl && !isLoading) {
       handleSubmit(initialUrl)
+      
     }
   }, [initialUrl])
 
