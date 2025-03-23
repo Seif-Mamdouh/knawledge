@@ -38,12 +38,9 @@ export async function addAnonymousPage(url: string) {
             anonymousId: anonymousId 
           }
         });
-        console.log('ANONYMOUS PAGE: Added anonymous fields successfully');
       } catch (updateError) {
         console.warn('ANONYMOUS PAGE: Could not update with anonymous fields:', updateError);
       }
-      
-      console.log('ANONYMOUS PAGE: Page created successfully with ID:', page.id);
     } catch (pageError) {
       console.error('ANONYMOUS PAGE: Failed to create page in database:', pageError);
       return { success: false, error: `Page creation failed: ${String(pageError)}` };
