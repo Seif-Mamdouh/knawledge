@@ -32,7 +32,6 @@ export async function addAnonymousPage(url: string) {
     
     console.log('ANONYMOUS PAGE: Page created successfully');
     
-    // Create snapshot
     try {
       await createPageSnapshot(page.id);
       console.log('ANONYMOUS PAGE: Snapshot created successfully');
