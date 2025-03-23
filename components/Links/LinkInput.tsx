@@ -38,9 +38,7 @@ export function LinkInput({ pageId, onAddLink }: LinkInputProps) {
   }, [url])
 
   const handleSubmit = async (url: string) => {
-    if (!url || !isValidUrl) {
-      return;
-    }
+    if (!url || !isValidUrl) return;
 
     try {
       setIsLoading(true)
