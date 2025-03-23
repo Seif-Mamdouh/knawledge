@@ -10,7 +10,7 @@ export async function addAnonymousPage(url: string) {
   
   if (!url) {
     console.error('ANONYMOUS PAGE: No URL provided');
-    throw new Error('URL is required');
+    return { success: false, error: 'URL is required' };
   }
 
   try {
@@ -20,43 +20,34 @@ export async function addAnonymousPage(url: string) {
     const title = await extractTitle(url);
     console.log('ANONYMOUS PAGE: Title extracted:', title);
 
-    let page;
-    try {
-      page = await prisma.page.create({
-        data: {
-          title: title,
-          url: url,
-          userId: null,
-        },
-      });
-      
-      try {
-        await prisma.page.update({
-          where: { id: page.id },
-          data: { 
-            anonymous: true,
-            anonymousId: anonymousId 
-          }
-        });
-      } catch (updateError) {
-        console.warn('ANONYMOUS PAGE: Could not update with anonymous fields:', updateError);
-      }
-    } catch (pageError) {
-      console.error('ANONYMOUS PAGE: Failed to create page in database:', pageError);
-      return { success: false, error: `Page creation failed: ${String(pageError)}` };
-    }
+    const page = await prisma.page.create({
+      data: {
+        title: title,
+        url: url,
+        userId: null,
+        anonymous: true,
+        anonymousId: anonymousId
+      },
+    });
     
+    console.log('ANONYMOUS PAGE: Page created successfully');
+    
+    // Create snapshot
     try {
-      const snapshot = await createPageSnapshot(page.id);
+      await createPageSnapshot(page.id);
       console.log('ANONYMOUS PAGE: Snapshot created successfully');
     } catch (snapshotError) {
       console.error('ANONYMOUS PAGE: Failed to create snapshot:', snapshotError);
-      return { success: true, page, warning: `Snapshot creation failed: ${String(snapshotError)}` };
+      return { 
+        success: false, 
+        page, 
+        warning: `Snapshot creation failed: ${String(snapshotError)}` 
+      };
     }
 
     return { success: true, page };
   } catch (error) {
-    console.error('ANONYMOUS PAGE: Uncaught exception in addAnonymousPage:', error);
+    console.error('ANONYMOUS PAGE: Error in addAnonymousPage:', error);
     return { success: false, error: String(error) };
   }
 } 
