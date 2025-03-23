@@ -13,11 +13,10 @@ import { Search, Link, ArrowRight } from "lucide-react"
 interface LinkInputProps {
   pageId: string
   onAddLink: (url: string, pageId: string) => void
-  initialUrl?: string
 }
 
-export function LinkInput({ pageId, onAddLink, initialUrl }: LinkInputProps) {
-  const [url, setUrl] = useState(initialUrl || '')
+export function LinkInput({ pageId, onAddLink }: LinkInputProps) {
+  const [url, setUrl] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isValidUrl, setIsValidUrl] = useState(true)
   const [isFocused, setIsFocused] = useState(false)
@@ -38,47 +37,31 @@ export function LinkInput({ pageId, onAddLink, initialUrl }: LinkInputProps) {
     }
   }, [url])
 
-  useEffect(() => {
-    console.log("LinkInput mounted with initialUrl:", initialUrl);
-    
-    if (initialUrl && !isLoading) {
-      console.log("Auto-submitting initialUrl:", initialUrl);
-      handleSubmit(initialUrl);
-    }
-  }, [initialUrl])
-
   const handleSubmit = async (url: string) => {
     if (!url || !isValidUrl) {
-      console.log("Submit rejected - invalid URL:", url, "isValidUrl:", isValidUrl);
       return;
     }
 
     try {
-      console.log("Starting URL submission:", url);
       setIsLoading(true)
       const result = await addPage(url)
-      console.log("addPage result:", result)
 
       if (result.success && result.page) {
         setNewPageId(result.page.id)
-        console.log("Page added successfully, ID:", result.page.id)
+
         
         if (onAddLink) {
-          console.log("Calling onAddLink callback")
           onAddLink(url, result.page.id)
           setUrl("")
           setIsLoading(false)
         } else {
-          console.log("No onAddLink callback, redirecting directly")
           setUrl("")
           router.push(`/summarize/${result.page.id}`)
         }
       } else {
-        console.log("Failed to add page:", result)
         setIsLoading(false)
       }
     } catch (error) {
-      console.error("Exception during link submission:", error)
       setIsLoading(false)
     }
   }
