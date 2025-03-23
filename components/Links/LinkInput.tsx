@@ -12,11 +12,11 @@ import { Search, Link, ArrowRight } from "lucide-react"
 
 interface LinkInputProps {
   pageId: string
-  onAddLink?: (url: string, pageId: string) => void
+  onAddLink: (url: string, pageId: string) => void
 }
 
 export function LinkInput({ pageId, onAddLink }: LinkInputProps) {
-  const [url, setUrl] = useState("")
+  const [url, setUrl] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isValidUrl, setIsValidUrl] = useState(true)
   const [isFocused, setIsFocused] = useState(false)
@@ -37,8 +37,8 @@ export function LinkInput({ pageId, onAddLink }: LinkInputProps) {
     }
   }, [url])
 
-  const handleSubmit = async () => {
-    if (!url || !isValidUrl) return
+  const handleSubmit = async (url: string) => {
+    if (!url || !isValidUrl) return;
 
     try {
       setIsLoading(true)
@@ -46,6 +46,7 @@ export function LinkInput({ pageId, onAddLink }: LinkInputProps) {
 
       if (result.success && result.page) {
         setNewPageId(result.page.id)
+
         
         if (onAddLink) {
           onAddLink(url, result.page.id)
@@ -59,14 +60,13 @@ export function LinkInput({ pageId, onAddLink }: LinkInputProps) {
         setIsLoading(false)
       }
     } catch (error) {
-      console.error("Failed to add link:", error)
       setIsLoading(false)
     }
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      handleSubmit()
+      handleSubmit(url)
     }
   }
 
@@ -156,7 +156,7 @@ export function LinkInput({ pageId, onAddLink }: LinkInputProps) {
 
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
             <Button
-              onClick={handleSubmit}
+              onClick={() => handleSubmit(url)}
               disabled={!url || !isValidUrl || isLoading}
               className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 transition-all duration-200 flex items-center justify-center group rounded-lg"
             >

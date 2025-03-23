@@ -186,15 +186,6 @@ export default function NotesEditor({ pageId, showMarkdownPreview = false }: Not
         </div>
         
         <div className="flex gap-2">
-          <Button 
-            onClick={handleShare}
-            variant="outline"
-            className="flex items-center gap-2"
-          >
-            <Share2 className="h-4 w-4" />
-            Share
-          </Button>
-          
           {isOwner && (
             <Button 
               onClick={handleManualSave}
