@@ -5,7 +5,7 @@ import { createPageSnapshot } from './createPageSnapshot'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 
-async function extractTitle(url: string): Promise<string> {
+export async function extractTitle(url: string): Promise<string> {
   try {
     const session = await getServerSession(authOptions)
     if (!session) {
