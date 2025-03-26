@@ -13,11 +13,16 @@ This project is an AI-powered tool designed to analyze and summarize knowledge c
 - Topic identification
 - Readability metrics
 - Citation and source verification
+- Quick summarization shortcuts:
+  - Anonymous access via URL parameters
+  - Authenticated API endpoint for integrations
+  - Browser extension support
 
 ## Technology Stack
 - Frontend: React.js with modern UI components
 - Backend: NLP libraries && Prisma DB
 - AI Models: Transformer-based language models for text analysis
+- API: RESTful endpoints with token-based authentication
 
 ## 📜 License
 This project is distributed under the [MIT License](https://opensource.org/license/mit).
